@@ -1,0 +1,158 @@
+@import 'vars.scss';
+html, body {
+	background: $tan;
+	margin: 0;
+	color: $white;
+	font-weight: bold;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: $sm-font-size;
+  line-height: $sm-line-height;
+}
+a,a:visited,a:hover,a:focus {
+	color: $white;
+}
+h1, h2, h3, h4 {
+	margin: 0;
+	font-weight: bold;
+}
+h1 {
+	font-size: $lg-font-size;
+  line-height: $lg-line-height;
+}
+h2 {
+	font-size: $md-font-size;
+  line-height: $md-line-height;
+}
+h3 {
+	font-size: $sm-font-size;
+  line-height: $sm-line-height;
+}
+#identity {
+	svg {
+		width: 100%;
+		height: auto;
+		&:last-of-type {
+			display: none;	
+		}
+		@include sm {
+			width: calc(100% + 30px);
+			margin: 0 -15px;
+			&:first-of-type {
+				display: none;
+			}
+			&:last-of-type {
+				display: block;
+			}
+		}
+	}
+}
+header {
+	margin: 60px 0;
+	.title {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		.burger {
+			width: $lg-font-size;
+			height: $lg-font-size;
+			background-image: url(images/burger.svg);
+			background-position: top center;
+			background-repeat: no-repeat;
+			background-size: contain;
+			display: none;
+		}
+	}
+	@include sm {
+		margin-bottom: 45px;
+		padding-bottom: 10px;
+		border-bottom: 3px solid $white;
+		.title .burger {
+			display: block;
+		}
+	}
+}
+main {
+	padding: 30px;
+	@include sm {
+		padding: 0 15px;
+	}
+}
+.col-utility {
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	padding-left: 30px;
+	padding-top: 25px;
+	padding-bottom: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	footer.social {
+		.social-icon {
+			display: block;
+			height: $sm-font-size;
+			margin: 0 15px 0 0;
+			float: left;
+			svg {
+				width: auto;
+				height: 100%;
+			}
+		}
+	}
+	@include sm {
+		display: none;
+	}
+}
+.col-spacer {
+	@include sm {
+		display: none;
+	}
+}
+.event {
+	margin: 0 0 60px 0;
+	a {
+		text-decoration: underline;
+	}
+	.event-thumb {
+		display: table;
+		padding: 5px 0;
+		img {
+			width: 100%;
+			height: auto;
+			display: table;
+		}
+	}
+	.event-content {
+		padding: 15px 0;
+	}
+	.event-info {
+		color: $pink;
+		a {
+			color: $pink;
+		}
+		.register a::after {
+			width: 1em;
+			height: 1em;
+			margin: 0 0 0 5px;
+			display: inline-block;
+			background-image: url(images/arrow.svg);
+			background-position: bottom center;
+			background-repeat: no-repeat;
+			background-size: contain;
+	    content: '';
+		}
+	}
+}
+
+#about {
+	padding: 30px 0;
+	color: $red;
+	font-size: $lg-font-size;
+  line-height: $lg-line-height;
+	a {
+		color: $red;
+	}
+}

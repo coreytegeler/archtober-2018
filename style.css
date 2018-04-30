@@ -1,0 +1,140 @@
+html, body {
+  background: #cdb182;
+  margin: 0;
+  color: #ffffff;
+  font-weight: bold;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 18px;
+  line-height: 24px; }
+
+a, a:visited, a:hover, a:focus {
+  color: #ffffff; }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: bold; }
+
+h1 {
+  font-size: 30px;
+  line-height: 35px; }
+
+h2 {
+  font-size: 25px;
+  line-height: 30px; }
+
+h3 {
+  font-size: 18px;
+  line-height: 24px; }
+
+#identity svg {
+  width: 100%;
+  height: auto; }
+  #identity svg:last-of-type {
+    display: none; }
+  @media (max-width: 575px) {
+    #identity svg {
+      width: calc(100% + 30px);
+      margin: 0 -15px; }
+      #identity svg:first-of-type {
+        display: none; }
+      #identity svg:last-of-type {
+        display: block; } }
+
+header {
+  margin: 60px 0; }
+  header .title {
+    width: 100%;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: justify;
+            justify-content: space-between; }
+    header .title .burger {
+      width: 30px;
+      height: 30px;
+      background-image: url(./assets/images/burger.svg);
+      background-position: top center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      display: none; }
+  @media (max-width: 575px) {
+    header {
+      margin-bottom: 45px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #ffffff; }
+      header .title .burger {
+        display: block; } }
+
+main {
+  padding: 30px; }
+  @media (max-width: 575px) {
+    main {
+      padding: 0 15px; } }
+
+.col-utility {
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-left: 30px;
+  padding-top: 25px;
+  padding-bottom: 30px;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+          justify-content: space-between; }
+  .col-utility footer.social .social-icon {
+    display: block;
+    height: 18px;
+    margin: 0 15px 0 0;
+    float: left; }
+    .col-utility footer.social .social-icon svg {
+      width: auto;
+      height: 100%; }
+  @media (max-width: 575px) {
+    .col-utility {
+      display: none; } }
+
+@media (max-width: 575px) {
+  .col-spacer {
+    display: none; } }
+
+.event {
+  margin: 0 0 60px 0; }
+  .event a {
+    text-decoration: underline; }
+  .event .event-thumb {
+    display: table;
+    padding: 5px 0; }
+    .event .event-thumb img {
+      width: 100%;
+      height: auto;
+      display: table; }
+  .event .event-content {
+    padding: 15px 0; }
+  .event .event-info {
+    color: #ee174e; }
+    .event .event-info a {
+      color: #ee174e; }
+    .event .event-info .register a::after {
+      width: 1em;
+      height: 1em;
+      margin: 0 0 0 5px;
+      display: inline-block;
+      background-image: url(./assets/images/arrow.svg);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      content: ''; }
+
+#about {
+  padding: 30px 0;
+  color: #fa0025;
+  font-size: 30px;
+  line-height: 35px; }
+  #about a {
+    color: #fa0025; }

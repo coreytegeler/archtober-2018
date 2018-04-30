@@ -1,0 +1,43 @@
+{
+  "name": "archtober-2018",
+  "version": "1.0.0",
+  "description": "A custom theme.",
+  "author": "Corey Tegeler",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coreytegeler/archtober-2018.git"
+  },
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/coreytegeler/archtober-2018/issues"
+  },
+  "homepage": "https://github.com/coreytegeler/archtober-2018#readme",
+  "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "browser-sync": "^2.18.8",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-coffee": "^2.3.4",
+    "gulp-connect-php": "^0.0.8",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-sass": "^3.2.0",
+    "gulp-util": "^3.0.8",
+    "node-sass": "^4.8.2",
+    "rupture": "^0.6.2",
+    "yargs": "^6.6.0",
+    "gulp-postcss": "^7.0.1",
+    "npm": "^5.7.1",
+    "postcss": "^6.0.19"
+  }
+}
