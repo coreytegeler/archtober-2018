@@ -2,16 +2,25 @@ $orange: #f36b22;
 $white: #ffffff;
 $green: #9bc23b;
 $blue: #00aeef;
-$pink: #ee174e;
-$tan: #cdb182;
-$red: #fa0025;
+$tan: #C0A475;
+$red: #fb0025;
 
 $sm-font-size: 18px;
 $sm-line-height: 24px;
-$md-font-size: 25px;
-$md-line-height: 30px;
-$lg-font-size: 30px;
-$lg-line-height: 35px;
+$md-font-size: 30px;
+$md-line-height: 34px;
+$lg-font-size: 50px;
+$lg-line-height: 55px;
+
+@font-face {
+  font-family: 'Arnhem';
+  src: url('fonts/Arnhem-Bold.woff2') format('woff2'),
+      url('fonts/Arnhem-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+$serif: 'Arnhem', serif;
+$sanSerif: 'Helvetica Neue', Helvetica, sans-serif;
 
 @mixin sm {
 	@media (max-width: 575px) {

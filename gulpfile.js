@@ -19,7 +19,8 @@ var paths = {
 var dest = {
   css: './',
   js: './assets/js/',
-  images: './assets/images/'
+  images: './assets/images/',
+  fonts: './assets/fonts/'
 }
 
 gulp.task('compile-sass', function() {
@@ -34,6 +35,7 @@ gulp.task('compile-sass', function() {
     .pipe(sass(sassOptions))
     .pipe(autoprefixer(apOptions))
     .pipe(replace('images/', dest.images))
+    .pipe(replace('fonts/', dest.fonts))
     .pipe(gulp.dest(dest.css))
   .on('end', function() {
     log('Sass done');

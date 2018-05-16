@@ -19,8 +19,8 @@ $events_args = array(
 query_posts( $events_args );
 echo '<div class="col col-12 col-sm-9">';
 	echo '<div id="identity">';
-		echo file_get_contents(get_template_directory_uri().'/assets/images/identity.svg');
-		echo file_get_contents(get_template_directory_uri().'/assets/images/identity-mobile.svg');
+		echo '<img src="'.get_template_directory_uri().'/assets/images/identity.gif"/>';
+		echo '<img src="'.get_template_directory_uri().'/assets/images/identity.gif"/>';
 	echo '</div>';
 	echo '<header>';
 		echo '<div class="title"><h2>NYCxDESIGN</h2><div class="burger"></div></div>';
@@ -29,7 +29,7 @@ echo '<div class="col col-12 col-sm-9">';
 	echo '<div class="events row">';
 		if ( have_posts() ) :
 			while ( have_posts() ) : the_post();
-				echo '<div class="col col-12 col-md-6 col-lg-6 event">';
+				echo '<div class="col col-12 col-md-6 event">';
 					get_template_part( 'content', 'events' );
 				echo '</div>';
 			endwhile;

@@ -30,7 +30,7 @@ h3 {
   line-height: $sm-line-height;
 }
 #identity {
-	svg {
+	svg,img {
 		width: 100%;
 		height: auto;
 		&:last-of-type {
@@ -55,8 +55,8 @@ header {
 		display: flex;
 		justify-content: space-between;
 		.burger {
-			width: $lg-font-size;
-			height: $lg-font-size;
+			width: 30px;
+			height: 30px;
 			background-image: url(images/burger.svg);
 			background-position: top center;
 			background-repeat: no-repeat;
@@ -73,8 +73,44 @@ header {
 		}
 	}
 }
+nav {
+	h2 {
+		display: inline;
+	}
+	ul,ol,li {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	a {
+		border-bottom: 2px solid transparent;
+		&:hover {
+			cursor: pointer;
+			text-decoration: none;
+			border-bottom-color: $white;
+		}
+	}
+	.title {
+		display: table;
+		position: relative;
+		.years {
+			display: none;
+			position: absolute;		
+			right: 0;
+			top: 100%;
+			&.show {
+				display: block;
+			}
+			&.static {
+				position: static;				
+				right: auto;
+				top: auto;
+			}
+		}
+	}
+}
 main {
-	padding: 30px;
+	padding: 0 30px 30px 30px;
 	@include sm {
 		padding: 0 15px;
 	}
@@ -92,13 +128,12 @@ main {
 	justify-content: space-between;
 	footer.social {
 		.social-icon {
-			display: block;
-			height: $sm-font-size;
-			margin: 0 15px 0 0;
-			float: left;
+			display: inline-block;
+			height: 20px;
+			margin: 15px 15px 0 0;
 			svg {
 				width: auto;
-				height: 100%;
+				height: 20px;
 			}
 		}
 	}
@@ -129,9 +164,10 @@ main {
 		padding: 15px 0;
 	}
 	.event-info {
-		color: $pink;
+		color: $white;
 		a {
-			color: $pink;
+			color: $white;
+			text-decoration: none;
 		}
 		.register a::after {
 			width: 1em;
@@ -148,11 +184,19 @@ main {
 }
 
 #about {
+	max-width: 900px;
 	padding: 30px 0;
-	color: $red;
+	color: $white;
+	font-family: $serif;
 	font-size: $lg-font-size;
   line-height: $lg-line-height;
 	a {
-		color: $red;
+		color: $white;
+	}
+	p {
+		margin: 0;
+		&:not(:first-of-type) {
+			text-indent: 1.25em;
+		}
 	}
 }

@@ -16,16 +16,28 @@
 			<div class="col col col-12 col-sm-3 col-spacer"></div>
 			<div class="col col col-12 col-sm-3 col-utility">
 				<nav class="navigation" role="navigation" aria-label="<?php esc_attr_e( 'Navigation', 'twentysixteen' ); ?>">
-					<h2><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></h2>
-					<?php
-					if ( has_nav_menu( 'navigation' ) ) :
-						foreach( wp_get_nav_menu_items( 'navigation' ) as $menu_item ):
-							echo '<h2><a href="'.$menu_item->url.'">'.$menu_item->title.'</a></h2>';
-						endforeach;
-					endif;
-					?>
+					<ul>
+						<li class="title">
+							<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+								<h2 class="label">Archtober 2018</h2>
+							</a>
+							<div class="years">
+								<ol>
+									<?php for($year = 2017; $year >= 2011; $year--) {
+										echo '<li><h2><a href="https://archtober.org/'.$year.'" target="_blank">'.$year.'</h2></li>';
+									} ?>
+								</ol>
+							</div>
+						</li>
+						<li class="archive">
+							<a><h2 class="label">Archive</h2></a>
+						</li>
+					</ul>
 				</nav>
 				<footer class="social">
+					<a href="mailto:<?= get_field( 'email', 'options' ) ?>?subject=<?= get_field( 'email_subject', 'options' ) ?>" class="email social-icon">
+						<?= file_get_contents(get_template_directory_uri().'/assets/images/email.svg'); ?>
+					</a>
 					<a href="<?= get_field( 'facebook', 'options' ) ?>" target="_blank" class="facebook social-icon">
 						<?= file_get_contents(get_template_directory_uri().'/assets/images/facebook.svg'); ?>
 					</a>

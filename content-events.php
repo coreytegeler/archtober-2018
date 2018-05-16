@@ -6,12 +6,12 @@
 	
 	<?php
 	if( has_post_thumbnail(get_the_ID()) ): 
-		echo '<a href="'.get_the_permalink().'" class="event-thumb">';
-			the_post_thumbnail( get_the_ID(), 'custom' );
-		echo '</a>';
+		echo '<div class="event-thumb">';
+			the_post_thumbnail( 'custom' );
+		echo '</div>';
 	else:
 		echo '<div class="event-content">';
-			echo '<a href="'.get_the_permalink().'">'.get_the_title().'</a>';
+			echo get_the_title();
 			the_excerpt();
 		echo '</div>';
 	endif;
@@ -24,7 +24,7 @@
 			<div class="partner"><?= $partner ?></div>
 		<?php endif; ?>
 		<?php if( $register = get_field('register') ): ?>
-			<div class="register"><a href="<?= $register ?>"><span>Register</span></a></div>
+			<div class="register"><a href="<?= $register ?>" target="_blank"><span>Register</span></a></div>
 		<?php endif; ?>
 	</div>
 </article>
