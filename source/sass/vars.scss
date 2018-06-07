@@ -5,12 +5,51 @@ $blue: #00aeef;
 $tan: #C0A475;
 $red: #fb0025;
 
-$sm-font-size: 18px;
+$sm-font-size: 20px;
 $sm-line-height: 24px;
+
 $md-font-size: 30px;
 $md-line-height: 34px;
+
 $lg-font-size: 50px;
 $lg-line-height: 55px;
+
+
+$sm-font-size-sm: 20px;
+$sm-line-height-sm: 24px;
+
+$md-font-size-sm: 20px;
+$md-line-height-sm: 24px;
+
+$lg-font-size-sm: 28px;
+$lg-line-height-sm: 34px;
+
+@mixin sm-text {
+	font-size: $sm-font-size;
+	line-height: $sm-line-height;
+	@include sm {
+		font-size: $sm-font-size-sm;
+		line-height: $sm-line-height-sm;
+	}
+}
+
+@mixin md-text {
+	font-size: $md-font-size;
+	line-height: $md-line-height;
+	@include sm {
+		font-size: $md-font-size-sm;
+		line-height: $md-line-height-sm;
+	}
+}
+
+@mixin lg-text {
+	font-size: $lg-font-size;
+	line-height: $lg-line-height;
+	@include sm {
+		font-size: $lg-font-size-sm;
+		line-height: $lg-line-height-sm;
+	}
+}
 
 @font-face {
   font-family: 'Arnhem';
@@ -24,6 +63,12 @@ $sanSerif: 'Helvetica Neue', Helvetica, sans-serif;
 
 @mixin sm {
 	@media (max-width: 575px) {
+		@content;
+	}
+}
+
+@mixin md {
+	@media (max-width: 768px) {
 		@content;
 	}
 }

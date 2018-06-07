@@ -22,10 +22,9 @@ echo '<div class="col col-12 col-sm-9">';
 		echo '<img src="'.get_template_directory_uri().'/assets/images/identity.gif"/>';
 		echo '<img src="'.get_template_directory_uri().'/assets/images/identity.gif"/>';
 	echo '</div>';
-	echo '<header>';
-		echo '<div class="title"><h2>NYCxDESIGN</h2><div class="burger"></div></div>';
-		echo '<div class="title"><h2>Building of the Day Preview</h2></div>';
-	echo '</header>';
+
+	get_template_part( 'headers', 'mobile' );
+
 	echo '<div class="events row">';
 		if ( have_posts() ) :
 			while ( have_posts() ) : the_post();
@@ -36,6 +35,9 @@ echo '<div class="col col-12 col-sm-9">';
 		endif;
 	echo '</div>';
 	echo '<div id="about">'.get_field( 'about', 'options' ).'</div>';
+	echo '<div class="mobile">';
+		get_template_part( 'social' );
+	echo '</div>';
 echo '</div>';
 get_footer();
 ?>

@@ -18,16 +18,16 @@ h1, h2, h3, h4 {
 	font-weight: bold;
 }
 h1 {
-	font-size: $lg-font-size;
-  line-height: $lg-line-height;
+	@include lg-text;
 }
 h2 {
-	font-size: $md-font-size;
-  line-height: $md-line-height;
+	@include md-text;
 }
 h3 {
-	font-size: $sm-font-size;
-  line-height: $sm-line-height;
+	@include sm-text;
+}
+p {
+	margin: 0 0 15px 0;
 }
 #identity {
 	svg,img {
@@ -49,29 +49,82 @@ h3 {
 	}
 }
 header {
-	margin: 60px 0;
+	width: 100%;
 	.title {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
-		.burger {
-			width: 30px;
-			height: 30px;
-			background-image: url(images/burger.svg);
-			background-position: top center;
-			background-repeat: no-repeat;
-			background-size: contain;
-			display: none;
+	}
+	&.main {
+		margin: 60px 0;
+		@include sm {
+			margin: 0 0 45px 0;
+			padding-bottom: 10px;
+			border-bottom: 3px solid $white;
+		}
+	}
+}
+.headers-mobile {
+	display: none;
+	header {
+		&.mobile {
+			padding: 15px 0 0 0;
+	    flex-wrap: wrap;
+	    justify-content: space-between;
+	    nav {
+	    	// opacity: 0;
+	    	padding-bottom: 15px;
+	    	.title.years.show {
+	    		position: absolute !important;
+				  right: 0 !important;
+				  top: 100% !important;
+	    	}
+	    	// .archive {
+	    	// 	display: none;
+	    	// }
+	    	// &.show {
+	    		// opacity: 1;
+	    		// margin-bottom: 15px;
+	    		// .archive {
+	    			// display: block;
+	    		// }
+	    	// }
+	    }
+	    &.placeholder {
+	    	display: none;
+	    	opacity: 0;
+	    }
+			.burger {
+				width: 30px;
+				height: 30px;
+				background-image: url(images/burger.svg);
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: contain;
+				display: block;
+			}
 		}
 	}
 	@include sm {
-		margin-bottom: 45px;
-		padding-bottom: 10px;
-		border-bottom: 3px solid $white;
-		.title .burger {
-			display: block;
-		}
+		display: flex;
+		nav {
+			width: 100%;
+	    border-bottom: 2px solid white;
+	  }
 	}
+	&.passed {
+		header.fixed {
+			position: fixed;
+	  	left: 0;
+	  	top: 0;
+	  	padding: 15px 15px 0 15px;
+	  	z-index: 100;
+	  	background: $tan;
+	  }
+	  header.placeholder {
+	  	display: block;
+	  }
+  }
 }
 nav {
 	h2 {
@@ -110,9 +163,10 @@ nav {
 	}
 }
 main {
+	min-width: 300px;
 	padding: 0 30px 30px 30px;
 	@include sm {
-		padding: 0 15px;
+		padding: 0 15px 30px 15px;
 	}
 }
 .col-utility {
@@ -126,17 +180,6 @@ main {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	footer.social {
-		.social-icon {
-			display: inline-block;
-			height: 20px;
-			margin: 15px 15px 0 0;
-			svg {
-				width: auto;
-				height: 20px;
-			}
-		}
-	}
 	@include sm {
 		display: none;
 	}
@@ -149,7 +192,7 @@ main {
 .event {
 	margin: 0 0 60px 0;
 	a {
-		text-decoration: underline;
+		text-decoration: none;
 	}
 	.event-thumb {
 		display: table;
@@ -169,7 +212,7 @@ main {
 			color: $white;
 			text-decoration: none;
 		}
-		.register a::after {
+		.register::after {
 			width: 1em;
 			height: 1em;
 			margin: 0 0 0 5px;
@@ -182,14 +225,56 @@ main {
 		}
 	}
 }
-
+.sponsors.row {
+	max-width: 900px;
+	padding: 25px 0 0 0;
+	@include sm {
+		padding: 45px 0 0 0;
+	}
+	.sponsor {
+		padding: 0 0 120px 0;
+		.excerpt {
+			display: table;
+		}
+		.sponsor-thumb {
+			display: table;
+			margin: 15px 0 0 0;
+			img {
+				width: 100%;
+				height: auto;
+				display: table;
+			}
+			@include md {
+				margin: 0;
+				img {
+					width: 90%;
+				}
+			}
+		}
+		&:nth-child(odd) {
+			padding-right: 45px;
+		}
+		&:nth-child(even) {
+			padding-left: 45px;	
+		}
+		@include md {
+			padding: 0 0 90px 30px !important;
+		}
+		@include sm {
+			padding: 0 15px 90px 15px !important;
+			@include md-text;
+		}
+	}
+}
 #about {
 	max-width: 900px;
-	padding: 30px 0;
+	padding: 60px 0 0 0;
 	color: $white;
 	font-family: $serif;
-	font-size: $lg-font-size;
-  line-height: $lg-line-height;
+	@include lg-text;
+  @include sm {
+		padding: 45px 0 15px 0;
+	}
 	a {
 		color: $white;
 	}
@@ -198,5 +283,23 @@ main {
 		&:not(:first-of-type) {
 			text-indent: 1.25em;
 		}
+	}
+}
+footer.social {
+	.social-icon {
+		display: inline-block;
+		height: 20px;
+		margin: 15px 15px 0 0;
+		svg {
+			width: auto;
+			height: 20px;
+		}
+	}
+}
+
+.mobile {
+	display: none;
+	@include sm {
+		display: block;
 	}
 }
