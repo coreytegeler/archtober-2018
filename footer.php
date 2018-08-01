@@ -1,14 +1,10 @@
 </div>
 </main>
+<?php
+$alert = get_field( 'alert', 'option' );
+if( $alert ):
+	// echo '<div id="alert">'.$alert.'<div class="icon-btn x"></div></div>';
+endif;
+?>
 <?php wp_footer(); ?>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25907718-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-25907718-1');
-</script>
-</body>
 </html>

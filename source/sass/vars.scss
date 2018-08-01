@@ -1,18 +1,21 @@
-$orange: #f36b22;
-$white: #ffffff;
-$green: #9bc23b;
-$blue: #00aeef;
-$tan: #C0A475;
-$red: #fb0025;
+$tan: rgb(192,164,117);
+$orange: rgb(255,111,0);
+$red: rgb(251,0,37);
+$white: rgb(255,255,255);
+$green: rgb(148,170,12);
+$blue: rgb(0,159,227);
 
-$sm-font-size: 20px;
-$sm-line-height: 24px;
+$xs-font-size: 12px;
+$xs-line-height: 15px;
+
+$sm-font-size: 24px;
+$sm-line-height: 27px;
 
 $md-font-size: 30px;
 $md-line-height: 34px;
 
-$lg-font-size: 50px;
-$lg-line-height: 55px;
+$lg-font-size: 40px;
+$lg-line-height: 46px;
 
 
 $sm-font-size-sm: 20px;
@@ -23,6 +26,11 @@ $md-line-height-sm: 24px;
 
 $lg-font-size-sm: 28px;
 $lg-line-height-sm: 34px;
+
+@mixin xs-text {
+	font-size: $xs-font-size;
+	line-height: $xs-line-height;
+}
 
 @mixin sm-text {
 	font-size: $sm-font-size;
