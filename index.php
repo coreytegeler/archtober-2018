@@ -25,15 +25,6 @@ echo '<div class="col col-12 col-sm-9">';
 
 	get_template_part( 'headers', 'mobile' );
 
-	echo '<div class="events row">';
-		if ( have_posts() ) :
-			while ( have_posts() ) : the_post();
-				echo '<div class="col col-12 col-md-6 event">';
-					get_template_part( 'content', 'events' );
-				echo '</div>';
-			endwhile;
-		endif;
-	echo '</div>';
 	echo '<div id="about">'.get_field( 'about', 'options' ).'</div>';
 	echo '<div class="mobile">';
 		get_template_part( 'social' );
