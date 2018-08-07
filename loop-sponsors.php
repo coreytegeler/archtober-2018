@@ -7,7 +7,7 @@ $sponsor_types = get_terms( array(
 echo '<div id="sponsors-loop" class="loop sponsors-loop">';
 foreach( $sponsor_types as $sponsor_type ):
 	echo '<div class="sponsor-type row">';
-		if( $sponsor_type->slug != 'main-sponsors' ):
+		if( $sponsor_type->slug != 'main-sponsor' ):
 			echo '<div class="sponsor-type-name col col-12">'.$sponsor_type->name.'</div>';
 		endif;
 		$sponsors_args = array(
@@ -25,7 +25,7 @@ foreach( $sponsor_types as $sponsor_type ):
 
 		if ( have_posts() ):
 			while ( have_posts() ) : the_post();
-				if( $sponsor_type->slug == 'main-sponsors' ):
+				if( $sponsor_type->slug == 'main-sponsor' ):
 					$sponsor_classes = 'col-sm-12 col-md-6 col-lg-6';
 					$img_class = 'col-12 col-sm-6 col-md-8 col-lg-6';
 				else:
@@ -34,15 +34,22 @@ foreach( $sponsor_types as $sponsor_type ):
 				endif;
 
 				echo '<div class="sponsor col col-12 '.$sponsor_classes.' '.$sponsor_type->slug.'">';
-					if( has_post_thumbnail(get_the_ID()) ): 
+					if( $sponsor_type->slug == 'main-sponsor' ):
+						the_excerpt();
+					endif;
+					if( has_post_thumbnail(get_the_ID()) ):
+						$website = get_field( 'website', $post );
+						if( $website ):
+							echo '<a href="'.http( $website ).'" target="_blank">';
+						endif;
 						echo '<div class="sponsor-thumb row">';
 							echo '<div class="'.$img_class.'">';
 								the_post_thumbnail( 'full' );
 							echo '</div>';
 						echo '</div>';
-					endif;
-					if( $sponsor_type->slug == 'main-sponsors' ):
-						the_excerpt();
+						if( $website ):
+							echo '</a>';
+						endif;
 					endif;
 				echo '</div>';
 			endwhile;

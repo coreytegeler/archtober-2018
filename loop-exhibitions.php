@@ -38,11 +38,9 @@
 ?>
 </div>
 <article class="exhibition-overlay overlay placeholder">
-	<div class="overlay-close"></div>
 	<div class="row overlay-inner">
-		<div class="col col-12"><div class="piece">&nbsp;</div></div>
 		<div class="col col-12 col-md-6"></div>
-		<div class="col col-12 col-md-6">
+		<div class="col col-12 col-md-6 fixed">
 			<div class="gallery"><figure class="active"></figure></div>
 		</div>
 	</div>

@@ -4,12 +4,19 @@ html, body {
 	margin: 0;
 	color: $white;
 	font-weight: bold;
+	overflow-x: hidden;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @include sm-text;
-  // font-size: $sm-font-size;
-  // line-height: $sm-line-height;
+  &.overlay-open {
+  	overflow: hidden;
+  }
+  @include sm {
+  	&.header-open {
+	  	overflow: hidden;
+	  }
+  }
 }
 a,a:visited,a:hover,a:focus {
 	color: $white;
@@ -52,42 +59,48 @@ p {
 	}
 }
 #identity {
-	width: 100%;
-	min-width: 100vw;
-	max-height: 100vh;
+	width: 100vw;
+	height: 100vh;
 	margin: 0;
 	padding: 0;
 	position: relative;
 	cursor: pointer;
-	margin-bottom: 30px;
-	svg {
+	opacity: 0;
+	transition: opacity 200ms ease-in-out;
+	&.show {
+		opacity: 1;
+	}
+	.logo {
+		width: calc(100% - 60px);
+		height: calc(100% - 60px);
+		position: absolute;
+		left: 30px;
+		top: 30px;
+		display: flex;
+		z-index: 150;
+		svg {
+			width: auto;
+			height: 90%;
+			display: block;
+			margin: auto;
+		}
+	}
+	.background {
 		width: 100%;
 		height: 100%;
 		max-width: 100vw;
 		max-height: 100vh;
 		position: relative;
 		z-index: 100;
-	}
-	.fill {
-		width: 50%;
-		height: 100%;
-		position: absolute;
-		top: 0;
-		&.red {
-			background: $red;
-			left: 0;
-		}
-		&.orange {
-			background: $orange;	
-			right: 0;
-		}
+		background-size: cover;
+		background-position: center;
 	}
 	.instruct {
 		width: 100%;
 		padding: 30px;
 		position: absolute;
 		left: 0;
-		bottom: 0px;
+		bottom: 30px;
 		text-align: center;
 		z-index: 100;
 		background-image: url(images/arrow-down.svg);
@@ -96,214 +109,44 @@ p {
 		background-size: auto 15px;
 	}
 }
-header {
-	width: 100%;
-	padding: 0 30px 30px 30px;
-	background: $tan;
-	z-index: 200;
-	display: none;
+.nav-icon {
+	width: 1em;
+	height: 1em;
+	background-position: center bottom;
+	position: fixed;
+	right: 30px;
+	top: 30px;
+	z-index: 350;
 	@include sm {
-		padding: 0 15px 15px 15px;
-		position: absolute;
-		left: 0;
-		top: 0;
+		right: 15px;
+		top: 15px;
 	}
-	a {
-		display: table;
+	&.x {
+		display: none;
 	}
-	.page-title {
-		.toggles {
-			display: table;
-			text-transform: lowercase;
-			@include sm {
-				display: none;
-				.toggle {
-					width: 100%;
-				}
-			}
-		}
-		.label.mobile {
-			padding-left: #{$sm-font-size + 5px};
-			background-image: url(images/arrow-down.svg);
-			background-repeat: no-repeat;
-			background-position: left center;
-			background-size: $sm-font-size;
-			&:hover {
-				cursor: pointer;
-			}
-		}
-	}
-	&.show-toggles .page-title {
-		@include sm {
-			.toggles {
-				display: table;
-			}
-			.label.mobile {
-				background-image: url(images/arrow-up.svg);
-			}
-		}
-	}
-	.site-title {
-		text-align: right;
-		a {
-			float: right;
-			display: inline-block;
-		}
-		@include sm {
-			position: absolute;
-			right: 0;
-			width: $sm-font-size-sm;
-			.label {
-				display: none;
-			}
-		}
-	}
-	.burger {
-		float: right;
-		background-position: center calc(100% - 2px);
-		display: inline-block;
-		margin-left: 15px;
-		@include sm {
-
-		}
-	}
-	nav {
-		max-height: 100vh;
-		position: relative;
-		padding: 30px;
-		overflow-y: auto;
-		background: $orange;
-		z-index: 200;
-		.x {
-			position: absolute;
-			right: 30px;
-			top: 30px;
-			@include sm {
-				right: 15px;
-				top: 15px;
-			}
-		}
-		.col.right {
-			display: flex;
-	    align-items: flex-end;
-	    text-align: right;
-		}
-		.nav-menu {
-			.menu-item {
-				transition: opacity 200ms ease-in-out;
-				&.archive {
-					cursor: pointer;
-				}
-				&.year {
-					opacity: 0;
-					pointer-events: none;
-					display: inline;
-					margin-left: 15px;
-					&.show {
-						opacity: 1;
-						pointer-events: all;
-					}
-				}
-			}
-		}
-		.footer {
-			text-align: right;
-		}
-		.social {
-			width: 100%;
-			height: 100%;
-	    display: flex;
-	    align-items: flex-end;
-			.icons {
-				display: flex;
-				flex-direction: row;
-				float: right;
-				margin: 15px 0 0 0;
-				a, a:hover, a:visited {
-					margin-right: 15px;
-					text-decoration: none;
-					border: 0;
-				}
-				svg {
-					width: $sm-font-size;
-					height: $sm-font-size;
-				}
-			}
-		}
-	}
-	.header-fixed & {
-		position: fixed;
-		left: 0;
-		top: 0;
-		padding: 30px;
-		max-height: 100%;
-		overflow-y: auto;
-		display: block;
-		@include sm {
-			padding: 15px;
-		}
-	}
-	&.open {
-		padding: 0;
-		.header-row {
+	.header-open & {
+		&.burger {
 			display: none;
 		}
-		nav {
+		&.x {
 			display: block;
-			@include sm {
-				height: 100vh;
-				padding: 15px;
-				display: flex;
-				flex-direction: column;
-		    justify-content: space-between;
-		    .bottom {
-		    	flex-direction: column-reverse;
-		    	.footer {
-		    		text-align: left;
-		    	}
-		    }
-			}
-		}
-	}
-}
-.header-placeholder {
-	width: 100%;
-	display: none;
-	color: transparent;
-	opacity: 0;
-	.header-fixed & {
-		// display: block;
-	}
-}
-.toggles {
-	width: 100%;
-	display: block;
-	clear: both;
-	margin: 5px 0 0 0;
-	@include sm-text;
-	.toggle {
-		float: left;
-		margin: 0 15px 0 0;
-		&::before {
-			width: 15px;
-			height: 15px;
-			content: '';
-			display: inline-block;
-			margin: 0 5px 0 0;
-			border: 2px solid $white;
-		}
-		&.active {
-			&::before {
-				background: $orange;
-			}
-		}
-		&:hover {
-			cursor: pointer;
 		}
 	}
 }
 nav {
+	width: 100%;
+	min-height: 50vh;
+	max-height: 100vh;
+	position: fixed;
+	left: 0;
+	top: 0;
+	padding: 30px;
+	background: $orange;
+	z-index: 300;
 	display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
 	h2 {
 		display: inline;
 	}
@@ -338,103 +181,304 @@ nav {
 			}
 		}
 	}
+	.x {
+		position: absolute;
+		right: 30px;
+		top: 30px;
+		@include sm {
+			right: 15px;
+			top: 15px;
+		}
+	}
+	.col.right {
+		display: flex;
+    align-items: flex-end;
+    text-align: right;
+	}
+	.nav-menu {
+		.menu-item {
+			transition: opacity 200ms ease-in-out;
+			&.archive span {
+				border-bottom: 2px solid transparent;
+				&:hover {
+					cursor: pointer;
+					text-decoration: none;
+					border-bottom-color: $white;
+				}
+			}
+			&.year {
+				opacity: 0;
+				pointer-events: none;
+				display: inline;
+				margin-left: 15px;
+				&.show {
+					opacity: 1;
+					pointer-events: all;
+				}
+				@include sm {
+					display: table;
+					margin: 0;
+				}
+			}
+		}
+	}
+	.footer a {
+		text-align: right;
+    float: right;
+    clear: both;
+	}
+	.social {
+		width: 100%;
+		height: 100%;
+    display: flex;
+    align-items: flex-end;
+		.icons {
+			display: flex;
+			flex-direction: row;
+			float: right;
+			margin: 15px 0 0 0;
+			a, a:hover, a:visited {
+				margin-right: 15px;
+				text-decoration: none;
+				border: 0;
+			}
+			svg {
+				width: $sm-font-size;
+				height: $sm-font-size;
+			}
+		}
+	}
+	&.open {
+		display: flex;
+	}
+	@include sm {
+		height: 100vh;
+		padding: 15px;
+    .row {
+    	display: table;
+    }
+    .bottom {
+    	flex-direction: column-reverse;
+    	.footer a {
+  			float: left;
+  			text-align: left;
+  		}
+    }
+	}
+}
+header {
+	width: 100%;
+	padding: 0 30px 30px 30px;
+	background: $tan;
+	z-index: 200;
+	display: none;
+	@include sm {
+		padding: 0 15px 15px 15px;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	a {
+		display: table;
+	}
+	.page-title {
+		.toggles {
+			display: table;
+			text-transform: lowercase;
+			.toggle {
+				width: auto;
+				display: table;
+				margin-right: 15px;
+			}
+			@include sm {
+				display: none;
+			}
+		}
+		.label.mobile {
+			padding-left: #{$sm-font-size + 5px};
+			background-image: url(images/arrow-down.svg);
+			background-repeat: no-repeat;
+			background-position: left center;
+			background-size: $sm-font-size;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+	}
+	&.show-toggles .page-title {
+		@include sm {
+			.toggles {
+				display: table;
+			}
+			.label.mobile {
+				background-image: url(images/arrow-up.svg);
+			}
+		}
+	}
+	.site-title {
+		text-align: right;
+		a {
+			float: right;
+			display: inline-block;
+			text-decoration: none;
+		}
+		.label {
+			margin-right: 45px;
+		}
+		@include sm {
+			position: absolute;
+			right: 0;
+			width: $sm-font-size-sm;
+			.label {
+				display: none;
+			}
+		}
+	}
+	.header-fixed & {
+		position: fixed;
+		left: 0;
+		top: 0;
+		padding: 30px;
+		max-height: 100%;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+		display: block;
+		@include sm {
+			padding: 15px;
+		}
+	}
+}
+.toggles {
+	width: 100%;
+	display: block;
+	clear: both;
+	margin: 5px 0 0 0;
+	@include sm-text;
+	user-select: none;
+	.toggle {
+    width: calc(100% - 15px);
+		float: left;
+	  padding-left: 19px;
+    text-indent: -19px;
+		&::before {
+			width: 15px;
+			height: 15px;
+			content: '';
+			display: inline-block;
+			margin: 0 5px 0 0;
+			border: 2px solid $white;
+		}
+		&.active {
+			&:not(.secret)::before {
+				background: $orange;
+			}
+		}
+		&:hover {
+			cursor: pointer;
+		}
+	}
 }
 #intro {
 	width: 100%;
-	padding: 0 30px 30px 30px;
+	padding: 30px 0;
 	@include lg-text;
+	overflow: hidden;
 	p:last-of-type {
 		margin: 0;
 	}
 	@include sm {
 		padding: 0 15px 15px 15px;
-	}
-	.header-fixed & {
-		// display: none;
-		opacity: 0;
+		@include sm-text;
 	}
 }
 main {
+	width: 100%;
 	min-width: 300px;
+	padding: 30px 0 0 0;
 	background: $tan;
 	position: relative;
+	overflow-x: hidden;
 	.main-inner {
 		padding: 120px 30px 120px 30px;
-		@include sm {
-			padding: 0 15px 30px 15px;
+		body.home & {
+			padding-top: 0;
+		}
+	}
+	@include sm {
+		padding: 15px 0 0 0;
+		.main-inner {
+			padding: 120px 15px 30px 15px;
 		}
 	}
 }
 .loop {
 	min-height: 50vh;
 	margin: 15px 0 0 0;
-	.block {
-		margin-top: 30px;
-		.item-link {
-			height: 12em;
-			padding: 15px;
-			display: block;
-			color: $white;
-			text-decoration: none;
-			@include sm {
-				height: auto;
-				padding: 0;
-				.text {
-					padding: 15px;
-				}
-			}
-			&:hover {
-				padding: 13px;
-				border: 2px solid $white;
-				color: $white;
-				background: transparent;
-			}
-		}
-		.event-title {
-			margin: 5px 0 0 0;
-		}
-		a, a:hover, a:visited {
-			color: $white;
+	.item {
+		&.hide {
+			display: none !important;
 		}
 	}
-	.exhibition-block {
-		.item-link {
-			background: $blue;
-		}
-	}
-	.event-block {
-		.item-link {
-			background: $green;
-		}
-		.secondary {
+	&[data-view="grid"] {
+		.list-view {
 			display: none;
-			@include sm {
-				display: block;
-			}
 		}
-		&:hover {
-			.primary {
-				display: none;
+		.block {
+			margin-top: 30px;
+			.item-link {
+				min-height: 12em;
+				padding: 15px;
+				display: flex;
+				color: $white;
+				text-decoration: none;
+				position: relative;
+				background: $green;
+				.row {
+					// width: 100%;
+					flex: 1;
+				}
+				.dash {
+					margin: 0 .1em;
+				}
+				.secondary {
+					display: none;
+					@include sm {
+						display: block !important;
+					}
+				}
+				&:hover {
+					padding: 13px;
+					border: 2px solid $white;
+					color: $white;
+					background: transparent;
+					.primary {
+						opacity: 0;
+						@include sm {
+							display: block !important;
+						}
+					}
+					.secondary {
+						width: 100%;
+				    height: calc(100% - 60px);
+				    display: block;
+				    position: absolute;
+				    left: 0;
+				    top: 15px;
+				    background: $tan;
+					}
+				}
 				@include sm {
-					display: block;
+					min-height: auto;
+					padding: 0 !important;
+					border: none !important;
+					flex-direction: column;
+					.text {
+						padding: 15px 30px;
+					}
 				}
 			}
-			.secondary {
-				display: block;
-			}
-		}
-	}
-	.botd {
-		.item-link {
-			background: $white;
-			color: $tan;
-			.text {
-				@include sm {
-					padding: 15px 30px;
-				}
-			}
-			.row {
-				height: 100%;
+			a, a:hover, a:visited {
+				color: $white;
 			}
 		}
 		.block-thumb {
@@ -448,51 +492,44 @@ main {
 				height: auto;
 			}
 		}
-		a, a:hover, a:visited {
-			color: $tan;
-		}
-		@include sm {
-			.text {
-				padding: 15px 30px;
+		.block.exhibition-block {
+			.item-link {
+				background: $blue;
 			}
 		}
-	}
-	&[data-view="grid"] {
+		.botd {
+			.item-link {
+				background: $white;
+				color: $tan;
+			}
+			a, a:hover, a:visited {
+				color: $tan;
+			}
+		}
 		.date-header {
+			padding: 0;
 			.fix {
 				width: 100%;
 				background: $tan;
 				z-index: 150;
-			}
-			.placeholder {
-				display: none;
-				opacity: 0;
+				padding: 90px 0 15px 0;
 			}
 			&.fixed {
+				padding-bottom: 15px;
 				.fix {
 					position: fixed;
 					left: 0;
-					padding: 0 30px 15px 30px;
-				}
-				.placeholder {
-					display: block;
+					padding: 90px 30px 15px 30px;
+					@include sm {
+						padding-top: 30px;
+					}
 				}
 			}
 			@include sm {
-				text-align: center;
+				text-align: center !important;
 			}
 		}
-		.day-loop {
-			opacity: 0;
-			transition: opacity 200ms ease-in-out;
-			&.show {
-				opacity: 1;
-			}
-		}
-		.event-row, .list-header {
-			display: none;
-		}
-		.day.row, .institution.row {
+		.institution.row {
 			margin-bottom: 120px;
 		}
 		&.hide-past .day.past {
@@ -501,24 +538,43 @@ main {
 	}
 	&[data-view="list"] {
 		margin-top: 0;
-		margin-left: -15px;
-		margin-right: -15px;
-		.date-header, .event-block {
+		.list-view {
+			margin-left: -30px;
+	    margin-right: -30px;
+		}
+		.grid-view {
 			display: none;
 		}
 		.list-header {
 			padding: 0 15px;
-			margin: 0 -15px;
-			display: flex;
-			flex-direction: row;
-			border-bottom: 2px solid $white;
+			@include sm {
+				display: none;
+			}
+			.fix {
+				width: auto;
+				padding: 0 15px;
+				margin: 0 -15px;
+				display: flex;
+				flex-direction: row;
+				border-bottom: 2px solid $white;
+				background: $tan;
+			}
+			&.fixed .fix {
+				width: 100%;
+				position: fixed;
+				left: 0;
+				z-index: 150;
+				padding: 0 15px;
+				margin: 0;
+			}
 			.col-header {
 				padding-top: 15px;
 				padding-bottom: 30px;
+				margin: 2px 0 0 0;
 				position: relative;
 				.popup {
 					width: 100%;
-					padding: 15px 15px 30px 15px;
+					padding: 10px 0 0 0;
 					position: absolute;
 					left: 0;
 					top: 0;
@@ -537,28 +593,45 @@ main {
 							display: block;
 						}
 					}
-					.popup-header {
-						span::after {
-							width: 30px;
-							height: 15px;
-							background-image: url(images/arrow-down.svg);
-							background-repeat: no-repeat;
-							background-position: center calc(100% - 2px);
-							background-size: 20px;
-							display: inline-block;
-							content: '';
-						}
+				}
+				.popup-header, .sort-header {
+					padding: 0 10px;
+					span::after {
+						width: 30px;
+						height: 15px;
+						background-image: url(images/arrow-down.svg);
+						background-repeat: no-repeat;
+						background-position: center calc(100% - 2px);
+						background-size: 20px;
+						display: inline-block;
+						content: '';
+					}
+				}
+				.sort-header {
+					position: absolute;
+					left: 0;
+					top: 10px;
+					span::after {
+						display: none;
+					}
+					&:hover {
+						// cursor: pointer;
+						// span::after {
+						// 	background-image: url(images/arrow-up.svg);
+						// }
 					}
 				}
 				.popup-content {
 					display: none;
-					padding-top: 15px;
+					padding: 15px 10px 30px 15px;
+					max-height: 50vh;
+					overflow-y: scroll;
+					-webkit-overflow-scrolling: touch;
 				}
 				.toggles {
 					display: table;
 					.toggle {
 						display: block;
-						width: 100%;
 					}
 				}
 				&.date {
@@ -571,8 +644,10 @@ main {
 				    flex-wrap: wrap;
 						.day {
 							width: calc(100%/7);
-							margin: 0;
+							margin: 0 0 5px 0;
 							text-align: center;
+							padding: 0;
+					    text-indent: 0;
 							.square {
 								width: 1.5em;
 								height: 1.5em;
@@ -617,31 +692,50 @@ main {
 			margin: 0;
 			padding: 0;
 			border-bottom: 2px solid $white;
-			&.hide {
-				display: none;
+			&.botd {
+				.item-link:hover {
+					background: $white;
+					color: $tan;
+				}
+			}
+			@include sm {
+				.row {
+					.col {
+						margin: 0 0 5px 0;
+						padding: 0;
+					}
+				}
 			}
 		}
 		.partner-row {
 			width: 100%;
 			padding: 30px 30px 60px 30px;
 			display: table;
+			@include sm {
+				padding: 0 0 15px 0;
+				margin: 0 0 15px 0;
+				display: block;
+			}
 		}
 		.item-link {
 			width: 100%;
-			padding: 30px 30px 60px 30px;
+			padding: 30px;
 			display: table;
 			&:hover {
 				text-decoration: none;
 				background: $green;
 			}
-			.event_type-botd & {
-				background: $white;
-				color: $tan;
-			}
 		}
 		&.hide-past .event.past {
 			// display: none;
-			background: pink;
+		}
+		@include sm {
+			margin-left: 0;
+			margin-right: 0;
+			.row {
+				margin-left: 0;
+				margin-right: 0;
+			}
 		}
 	}
 	&.sponsors-loop {
@@ -671,6 +765,11 @@ main {
 		content: ', ';
 	}
 }
+.partner {
+	span:not(:last-of-type)::after {
+		content: '/';
+	}
+}
 
 .overlay {
 	width: 100%;
@@ -678,15 +777,32 @@ main {
 	position: fixed;
 	left: 0;
 	top: 0;
-	z-index: 300;
+	z-index: 500;
 	overflow-x: hidden;
-	overflow-y: auto;
-	background: $green;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	color: $white;
+	&.event-overlay {
+		background: $green;
+	}
+	&.exhibition-overlay {
+		background: $blue;
+	}
 	.overlay-inner {
 		padding: 30px;
 		@include sm {
+			flex-direction: column-reverse;
 			padding: 15px;
+		}
+	}
+	.fixed {
+		position: fixed;
+		right: 15px;
+		top: 90px;
+		@include sm {
+			position: static;
+			right: auto;
+			top: auto;
 		}
 	}
 	.piece {
@@ -694,9 +810,12 @@ main {
 		span:not(:last-of-type)::after {
 			content: ', ';
 		}
+		a {
+			text-decoration: underline;
+		}
 	}
 	.x {
-		position: absolute;
+		position: fixed;
 		right: 30px;
 		top: 30px;
 		@include sm {
@@ -775,6 +894,9 @@ main {
 			}
 		}
 	}
+	@include sm {
+		margin: 90px 0;
+	}
 }
 
 .event-overlay.botd {
@@ -809,10 +931,25 @@ main {
 	bottom: 0;
 	left: 0;
 	background-color: $orange;
+	display: none;
+	@include sm {
+		padding: 15px;
+		text-align: left;
+		@include xs-text;
+	}
 	.x {
 		position: absolute;
     right: 30px;
     top: 30px;
+    @include sm {
+    	width: 15px;
+    	height: 15px;
+			right: 10px;
+	    top: 15px;
+		}
+	}
+	&.show {
+		display: block;
 	}
 }
 

@@ -1,22 +1,21 @@
 <?php
-global $post;
 if( !wp_doing_ajax() ) {
 	get_header();
 }
 $id = get_the_ID();
-$content = get_the_content();
+$content = wpautop( $post->post_content );
 $images = get_field( 'images' );
 $start_date = get_field( 'start_date' );
 $end_date = get_field( 'end_date' );
 $open_times = get_field( 'open_times' );
 $institutions = wp_get_post_terms( $id, 'institution' );
 $address = get_field( 'address' );
-$url = get_field( 'url' );
+$more_info = get_field( 'more_info' );
 $post_classes = array( 'exhibition-overlay', 'overlay' );
 $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 ?>
 <article data-id="<?= $id; ?>" <?php post_class( $post_classes ); ?>>
-	<a href="<?= $archive_url; ?>" class="icon-btn x"></a>
+	<a href="<?= $archive_url; ?>" class="icon-btn x" onclick="void(0)"></a>
 	<div class="row overlay-inner">
 
 		<div class="col col-12">
@@ -29,11 +28,19 @@ $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 				<h1><?= get_the_title(); ?></h1>
 			</div>
 
-			<div class="piece date-address">
-				<?= $start_date.' - '.$end_date ?>
-				<br/>
-				<?= $open_times ?>
-			</div>
+			<?php if( $start_date ): ?>
+				<div class="piece dates">
+					<?= date_format( date_create( $start_date ), 'M j' ).' &ndash; '; ?>
+					<?php if( $end_date ): ?>
+						<?= date_format( date_create( $end_date ), 'M j' ); ?>
+					<?php else: ?>
+						<?= 'Ongoing' ?>
+					<?php endif; ?>		
+					<?php if( $open_times ): ?>
+						<?= '<br/>'.$open_times ?>	
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
 
 			<div class="piece institution">
 				<?php
@@ -43,9 +50,9 @@ $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 				?>
 				<br/>
 				<?= $address ?>
-				<?php if( $url ): ?>
+				<?php if( $more_info ): ?>
 					<br/>
-					<a href="<?= $url ?>">More Information</a>
+					<a href="<?= http( $more_info ) ?>" target="_blank">More Information</a>
 				<?php endif; ?>
 			</div>
 
@@ -65,15 +72,17 @@ $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 						echo '</figure>';
 					endforeach;
 					echo '<div class="row">';
-						echo '<div class="col col-auto dots">';
-							$i = 0;
-							while( $i < sizeof( $images ) ):
-								echo '<div class="dot'.($i==0?' active':'').'" data-index="'.$i.'">';
-									echo '<span>'.($i+1).'</span>';
-								echo '</div>';
-								$i++;
-							endwhile;
-						echo '</div>';
+						if( sizeof( $images ) > 1 ):
+							echo '<div class="col col-auto dots">';
+								$i = 0;
+								while( $i < sizeof( $images ) ):
+									echo '<div class="dot'.($i==0?' active':'').'" data-index="'.$i.'">';
+										echo '<span>'.($i+1).'</span>';
+									echo '</div>';
+									$i++;
+								endwhile;
+							echo '</div>';
+						endif;
 						echo '<div class="col captions">';
 							foreach( $images as $i => $image ):
 								echo '<figcaption data-index="'.$i.'" class="'.($i==0?'active':'').'">';

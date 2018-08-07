@@ -1,7 +1,7 @@
 <?php
 $block_classes = array( 'event-block', 'event', 'block', 'item', 'col', 'col-12', 'col-sm-12', 'col-md-8', 'col-lg-6', 'botd' );
 ?>
-<article data-id="<?php the_ID(); ?>" data-post-type="events" <?php post_class( $block_classes ); ?>>
+<div data-id="<?php the_ID(); ?>" data-post-type="events" data-event-type="exhibition" <?php post_class( $block_classes ); ?>>
 	<a class="item-link" href="<?= the_permalink(); ?>">
 		<div class="row">
 			<div class="col col-12 mobile">
@@ -20,4 +20,4 @@ $block_classes = array( 'event-block', 'event', 'block', 'item', 'col', 'col-12'
 			</div>
 		</div>
 	</a>
-</article>
+</div>

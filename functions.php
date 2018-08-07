@@ -1,5 +1,5 @@
 <?php
-$ver = '1.6';
+$ver = '2.0.4';
 function archtober_scripts() {
 		wp_enqueue_style( 'style', get_stylesheet_uri() );
 		wp_enqueue_script( 'jquery', get_template_directory_uri() . '/assets/js/jquery-3.3.1.min.js', array(), true );
@@ -19,8 +19,8 @@ function get_overlay() {
 	$post = get_post( $_POST['id'] ); 
 	$post_type = $_POST['post_type']; 
 	setup_postdata($post);
-  get_template_part( 'single', $post_type );
-  die();
+	get_template_part( 'single', $post_type );
+	die();
 }
 
 
@@ -29,8 +29,8 @@ add_action( 'wp_ajax_get_day_of_events', 'get_day_of_events' );
 
 function get_day_of_events() {
 	$date_str = $_POST['date'];
-  include( locate_template( 'loop-day.php' ) );
-  die();
+	include( locate_template( 'loop-day.php' ) );
+	die();
 }
 
 function register_events() {
@@ -92,7 +92,7 @@ function register_time_of_day() {
 		),
 		'hierarchical' => true,
 		'show_uri' => true,
-		'show_admin_column' => true,
+		'show_admin_column' => false,
 		'update_count_callback' => '_update_post_term_count',
 		'query_var' => true,
 	);
@@ -227,6 +227,120 @@ function register_partner_types() {
 }
 add_action( 'init', 'register_partner_types' );
 
+
+function admin_column_date_order( $wp_query ) {
+	global $pagenow;
+		if ( is_admin() && 'edit.php' == $pagenow && !isset( $_GET['orderby'] )) {
+			$screen = get_current_screen();
+			$post_type = $screen->post_type;
+			if( $post_type == 'events' ):
+				$wp_query->set( 'order', 'DESC' );
+				$wp_query->set( 'meta_key', 'date' );
+				$wp_query->set( 'orderby',  'meta_value_num' );
+			elseif( $post_type == 'exhibitions' ):
+				$wp_query->set( 'order', 'DESC' );
+				$wp_query->set( 'meta_key', 'start_date' );
+				$wp_query->set( 'orderby',  'meta_value_num' );
+			endif;
+		}
+}
+add_filter('pre_get_posts', 'admin_column_date_order' );
+
+
+function add_events_columns( $columns ) {
+	unset( $columns['date'] );
+	return array_merge( $columns, array(
+		'start_date' => __( 'Start Date' ),
+		'partners' => __( 'Partners' ),
+	) );
+}
+add_filter('manage_events_posts_columns' , 'add_events_columns');
+
+function add_exhibitions_columns( $columns ) {
+	unset( $columns['date'] );
+	return array_merge( $columns, array(
+		'start_date' => __( 'Start Date' ),
+	) );
+}
+add_filter('manage_exhibitions_posts_columns' , 'add_exhibitions_columns');
+
+function custom_events_column( $column, $post_id ) {
+	switch ( $column ) {
+		case 'start_date':
+			$start_date = get_post_meta( $post_id, 'date' , true );
+			if($start_date && $start_date != 'Invalid date'):
+				$start_date = new DateTime( $start_date );
+				echo $start_date->format('m/j/y');
+			else:
+				echo '';
+			endif;
+			break;
+		case 'partners':
+			$partners = get_field( 'partner', $post_id );
+			foreach( $partners as $partner ):
+				$partner = get_post( $partner );
+				if( $partner->post_type == 'partners' ):
+					echo $partner->post_title;
+				endif;
+			endforeach;
+			break;
+	}
+}
+add_action( 'manage_events_posts_custom_column' , 'custom_events_column', 10, 2 );
+
+function custom_exhibitions_column( $column, $post_id ) {
+	switch ( $column ) {
+		case 'start_date':
+			$start_date = get_post_meta( $post_id, 'start_date' , true );
+			if($start_date && $start_date != 'Invalid date'):
+				$start_date = new DateTime( $start_date );
+				echo $start_date->format('m/j/y');
+			else:
+				echo '';
+			endif;
+			break;
+	}
+}
+add_action( 'manage_exhibitions_posts_custom_column' , 'custom_exhibitions_column', 10, 2 );
+
+
+function register_events_sortable_columns( $columns ) {
+	$columns['start_date'] = 'start_date';
+	$columns['partners'] = 'partners';
+	return $columns;
+}
+add_filter( 'manage_edit-events_sortable_columns', 'register_events_sortable_columns' );
+
+function register_exhibitions_sortable_columns( $columns ) {
+	$columns['start_date'] = 'start_date';
+	return $columns;
+}
+add_filter( 'manage_edit-exhibitions_sortable_columns', 'register_exhibitions_sortable_columns' );
+
+function custom_column_orderby( $vars ) {
+	if( isset( $vars['orderby'] ) ):
+		if( $vars['orderby'] == 'start_date' ):
+			if( $vars['post_type'] == 'events' ):
+				$meta_key = 'date';
+			elseif( $vars['post_type'] == 'exhibitions' ):
+				$meta_key = 'start_date';
+			endif;
+			$vars = array_merge( $vars, array(
+				'meta_key' => $meta_key,
+				'orderby' => 'meta_value_num'
+			) );
+		endif;
+		if( isset($vars['order'] ) ):
+			$vars = array_merge( $vars, array (
+				'order' => $vars['order']
+			) );
+		endif;
+	endif;
+	return $vars;
+}
+add_filter( 'request', 'custom_column_orderby' );
+
+
 function remove_menus(){
 	remove_menu_page( 'jetpack' );
 	remove_menu_page( 'edit-comments.php' );
@@ -243,12 +357,25 @@ function get_time_span( $post_id ) {
 	$time_span = '';
 	if( have_rows( 'times', $post_id ) ):
 		while( have_rows( 'times', $post_id ) ): the_row();
-			if( $start_time = get_sub_field( 'start_time' ) ):
+			$start_time = get_sub_field( 'start_time' );
+			$end_time = get_sub_field( 'end_time' );
+			if( $start_time ):
 				if( get_row_index() > 1 ):
 					$time_span .= ', ';
 				endif;
+
+				if( $end_time ):
+					$pseudo_start_date = date_create( '2018-10-01 '.$start_time );
+					$pseudo_end_date = date_create( '2018-10-01 '.$end_time );
+					$start_period = date_format( $pseudo_start_date, 'a' );
+					$end_period = date_format( $pseudo_end_date, 'a' );
+					if( $start_period == $end_period ):
+						$start_time = str_replace( $start_period, '', $start_time );
+					endif;
+				endif;
+
 				$time_span .= $start_time;
-				if( $end_time = get_sub_field( 'end_time' ) ):
+				if( $end_time ):
 					$time_span .= '&ndash;'.$end_time;
 				endif;
 			endif;
@@ -289,16 +416,16 @@ function pretty_url( $url ) {
 }
 
 function http($url) {
-  if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
-      $url = "http://" . $url;
-  }
-  return $url;
+	if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+			$url = "http://" . $url;
+	}
+	return $url;
 }
 
 if( function_exists('acf_add_options_page') ) {
 	acf_add_options_page(); 
 }
-add_theme_support( 'post-thumbnails', array( 'post', 'page', 'events', 'sponsors' ) ); 
+add_theme_support( 'post-thumbnails', array( 'post', 'page', 'events', 'sponsors', 'exhibitions' ) ); 
 add_image_size( 'custom', 800, 533, true );
 add_filter('show_admin_bar', 'false');
 ?>

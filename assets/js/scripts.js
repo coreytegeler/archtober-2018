@@ -1,19 +1,24 @@
 jQuery(document).ready(function($) {
-  var body, burger, closeOverlay, eventsLoop, fillDays, filterList, header, headerPlaceholder, headerWrap, identity, itemRows, main, openOverlay, overlayPlaceholder, setupGallery;
+  var alert, body, burger, checkIdentity, closeOverlay, fillDays, filterItems, gridView, header, headerPlaceholder, identity, intro, itemRows, itemsLoop, listView, main, mainInner, nav, openOverlay, overlayPlaceholder, setupGallery;
   body = $('body');
-  headerWrap = $('.header-wrap');
+  nav = $('nav');
   header = $('header');
   headerPlaceholder = $('.header-placeholder');
   identity = $('#identity');
+  intro = $('#intro');
+  alert = $('#alert');
   main = $('main');
+  mainInner = $('.main-inner');
   burger = $('.burger');
   overlayPlaceholder = $('.overlay.placeholder');
-  eventsLoop = $('.events-loop');
+  itemsLoop = $('.loop');
   itemRows = $('.item-row');
+  gridView = itemsLoop.find('.grid-view');
+  listView = itemsLoop.find('.list-view');
   fillDays = function() {
-    return $('.day-loop').each(function(i, day) {
+    return $('.grid-view .day-loop').each(function(i, gridDayLoop) {
       var date;
-      date = $(day).attr('data-date');
+      date = $(gridDayLoop).attr('data-date');
       return $.ajax({
         url: ajax_obj.ajaxurl,
         type: 'POST',
@@ -23,11 +28,22 @@ jQuery(document).ready(function($) {
           action: 'get_day_of_events'
         },
         success: function(html) {
+          var blocks, listDayLoop, rows;
           if (html.length) {
-            $(day).append(html);
-            return $(day).addClass('show');
-          } else {
-            return $(day).remove();
+            $(gridDayLoop).find('.block.placeholder').remove();
+            blocks = $(html).filter('.event-block');
+            rows = $(html).filter('.event-row');
+            blocks.each(function(i, block) {
+              return $(gridDayLoop).append(block);
+            });
+            $(gridDayLoop).addClass('show');
+            listDayLoop = listView.find('[data-date="' + date + '"]');
+            rows.each(function(i, row) {
+              return listDayLoop.append(row);
+            });
+            if (itemsLoop.attr('data-view') === 'list') {
+              return filterItems();
+            }
           }
         },
         error: function(error) {
@@ -43,36 +59,17 @@ jQuery(document).ready(function($) {
       scrollTop: top + 'px'
     }, 200);
   });
-  $(window).scroll(function(e) {
-    var headerBottom, identityBottom, scrollTop;
-    scrollTop = $(window).scrollTop();
-    headerBottom = header.position().top + header.innerHeight();
-    identityBottom = identity.innerHeight();
-    if (identityBottom <= scrollTop) {
-      body.addClass('header-fixed');
-      return $('.date-header').each(function() {
-        var dateTop;
-        dateTop = $(this).offset().top;
-        if (dateTop <= scrollTop + headerBottom) {
-          $(this).addClass('fixed');
-          return $(this).find('.fix').css({
-            top: headerBottom
-          });
-        } else {
-          return $(this).removeClass('fixed');
-        }
-      });
-    } else {
-      return body.removeClass('header-fixed');
-    }
-  }).scroll();
-  body.on('click', 'header .burger', function() {
-    return header.addClass('open');
+  body.on('click', '.nav-icon.burger', function() {
+    nav.addClass('open');
+    body.addClass('header-open');
+    return $(window).scroll();
   });
-  body.on('click', 'header .x', function() {
-    return header.removeClass('open');
+  body.on('click', '.nav-icon.x', function() {
+    nav.removeClass('open');
+    body.removeClass('header-open');
+    return $(window).scroll();
   });
-  body.on('click', '.menu-item.archive', function() {
+  body.on('click', '.menu-item.archive span', function() {
     $(this).toggleClass('active');
     return $('.menu-item.year').each(function(i, item) {
       return setTimeout(function() {
@@ -82,35 +79,57 @@ jQuery(document).ready(function($) {
   });
   body.on('click', '.calendar .clear', function() {
     $('.calendar .day').addClass('active secret');
-    return filterList();
+    return filterItems();
   });
   body.on('click', '.header-row .label.mobile', function() {
     return header.toggleClass('show-toggles');
   });
+  body.on('click', '.sort-header', function() {
+    var col, sort;
+    col = $(this).parents('.col-header');
+    return sort = col.attr('data-sort');
+  });
   body.on('click', '.toggle', function() {
-    var filter, sib, view;
-    view = $(this).attr('data-view');
-    filter = $(this).attr('data-filter');
-    if ($(this).is('.day')) {
-      $('.calendar .filter.secret').removeClass('secret active');
-    }
+    var filter, sib, toggle, toggles, view;
+    toggle = $(this);
+    view = toggle.attr('data-view');
+    filter = toggle.attr('data-filter');
+    toggles = toggle.parents('.toggles').find('.toggle');
+    toggles.filter('.secret').each(function(i, secret) {
+      return $(secret).removeClass('active secret');
+    });
     if (view) {
-      sib = $(this).siblings('.view');
+      sib = toggle.siblings('.view');
       sib.removeClass('active');
       $('.events-loop').attr('data-view', view);
-      return $(this).addClass('active');
+      return toggle.addClass('active');
     } else if (filter) {
-      $(this).toggleClass('active');
-      return filterList();
+      toggle.toggleClass('active');
+      if (!toggles.filter('.active').length) {
+        toggles.addClass('active secret');
+      }
+      return filterItems();
     } else if ($(this).is('.hide-past')) {
       $(this).toggleClass('active');
-      return eventsLoop.toggleClass('hide-past');
+      return itemsLoop.toggleClass('hide-past');
     }
   });
-  filterList = function() {
-    var filters, j, len, results, selected, tax;
+  filterItems = function() {
+    var filters, items, j, len, results, selected, tax, toggles, view;
     filters = [];
-    $('.toggle.filter').each(function(i, toggle) {
+    view = itemsLoop.attr('data-view');
+    if (view === 'grid') {
+      toggles = $('header .toggle.filter');
+      items = itemsLoop.find('.item.block');
+    } else if (view === 'list') {
+      if (itemsLoop.is('#events-loop')) {
+        toggles = $('.list-header .toggle.filter');
+      } else if (itemsLoop.is('#partners-loop')) {
+        toggles = $('.header-row .toggle.filter');
+      }
+      items = itemsLoop.find('.item-row');
+    }
+    toggles.each(function(i, toggle) {
       var filter, selector, slug;
       filter = $(toggle).attr('data-filter');
       slug = $(toggle).attr('data-slug');
@@ -123,14 +142,14 @@ jQuery(document).ready(function($) {
         return filters[filter].push(slug);
       }
     });
-    itemRows.removeClass('hide');
+    items.removeClass('hide');
     results = [];
     for (j = 0, len = filters.length; j < len; j++) {
       tax = filters[j];
       selected = filters[tax];
-      results.push(itemRows.each(function(i, itemRow) {
+      results.push(items.each(function(i, item) {
         var k, len1, show, term, terms;
-        terms = $(itemRow).attr('data-' + tax);
+        terms = $(item).attr('data-' + tax);
         if (terms) {
           terms = terms.split(',');
           show = false;
@@ -141,7 +160,7 @@ jQuery(document).ready(function($) {
             }
           }
           if (!show) {
-            return $(itemRow).addClass('hide');
+            return $(item).addClass('hide');
           }
         }
       }));
@@ -152,6 +171,7 @@ jQuery(document).ready(function($) {
     var id, item, postType, state, url;
     e.preventDefault();
     item = $(this).parents('.item');
+    overlayPlaceholder.find('.x').attr('href', location.href);
     if (item.is('.event_type-botd')) {
       overlayPlaceholder.addClass('botd');
     } else {
@@ -195,6 +215,7 @@ jQuery(document).ready(function($) {
     }
   };
   openOverlay = function(id, postType) {
+    body.addClass('overlay-open');
     return $.ajax({
       url: ajax_obj.ajaxurl,
       type: 'POST',
@@ -211,22 +232,32 @@ jQuery(document).ready(function($) {
         return header.removeClass('open');
       },
       error: function(error) {
-        return console.log(error);
+        console.log(error);
+        return closeOverlay();
       }
     });
   };
   closeOverlay = function() {
-    var id, item, overlay, scrollTop, target;
+    var id, item, offset, overlay, parent, scrollTop, target;
+    body.removeClass('overlay-open');
     overlay = $('.overlay[data-id]');
-    id = $(overlay).attr('data-id');
+    id = overlay.attr('data-id');
+    if (!id) {
+      overlay.removeClass('show');
+      overlayPlaceholder.removeClass('show');
+      return;
+    }
     item = $('.item').filter('[data-id="' + id + '"]');
-    if ($('.loop').is(['data-view="grid"']) || $('.loop').is('.exhibitions-loop')) {
+    parent = item.parents('.loop');
+    offset = header.innerHeight();
+    if (parent.attr('data-view') === 'grid' || parent.is('.exhibitions-loop')) {
       target = item.parents('.row');
     } else {
       target = item.filter('.item-row');
+      offset += $('.list-header .fix').innerHeight();
     }
-    scrollTop = target.offset().top - header.innerHeight();
-    $(window).scrollTop(scrollTop - 30);
+    scrollTop = target.offset().top - offset;
+    $(window).scrollTop(scrollTop);
     return overlay.remove();
   };
   body.on('click', '.gallery .dot', function(e) {
@@ -258,6 +289,66 @@ jQuery(document).ready(function($) {
       return figure.addClass('loaded');
     });
   };
+  if (localStorage.getItem('hide-alert')) {
+    alert.remove();
+  } else {
+    alert.addClass('show');
+  }
+  body.on('click', '#alert .x', function() {
+    localStorage.setItem('hide-alert', true);
+    return alert.remove();
+  });
+  $(window).resize(function() {
+    return $(window).scroll();
+  }).resize();
+  checkIdentity = function() {
+    if (sessionStorage.getItem('hide-identity')) {
+      identity.remove();
+      return body.addClass('header-fixed');
+    } else {
+      return identity.addClass('show');
+    }
+  };
+  $(window).scroll(function(e) {
+    var headerBottom, headerHeight, mainTop, scrollTop, topHeight;
+    checkIdentity();
+    scrollTop = $(window).scrollTop();
+    mainTop = main.offset().top;
+    headerHeight = header.innerHeight();
+    headerBottom = headerHeight;
+    topHeight = headerHeight;
+    $('[data-view="grid"] .date-header, [data-view="list"] .list-header').each(function() {
+      var fixHeight, thisFix, thisHeader, thisTop;
+      thisHeader = $(this);
+      thisFix = thisHeader.find('.fix');
+      thisTop = thisHeader.offset().top;
+      fixHeight = thisFix.innerHeight();
+      if (thisTop <= scrollTop + headerBottom) {
+        thisHeader.addClass('fixed').css({
+          height: fixHeight
+        });
+        return thisFix.css({
+          top: headerBottom
+        });
+      } else {
+        thisHeader.removeClass('fixed').attr('style', '');
+        return thisFix.attr('style', '');
+      }
+    });
+    if (!topHeight) {
+      topHeight = headerHeight;
+    }
+    if (mainTop <= scrollTop) {
+      sessionStorage.setItem('hide-identity', true);
+      identity.remove();
+      mainInner.css({
+        marginTop: topHeight
+      });
+      return body.addClass('header-fixed');
+    } else {
+      return body.removeClass('header-fixed');
+    }
+  }).scroll();
   setupGallery();
   return fillDays();
 });

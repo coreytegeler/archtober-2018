@@ -1,18 +1,23 @@
 jQuery(document).ready ($) ->
 	body = $('body')
-	headerWrap = $('.header-wrap')
+	nav = $('nav')
 	header = $('header')
 	headerPlaceholder = $('.header-placeholder')
 	identity = $('#identity')
+	intro = $('#intro')
+	alert = $('#alert')
 	main = $('main')
+	mainInner = $('.main-inner')
 	burger = $('.burger')
 	overlayPlaceholder = $('.overlay.placeholder')
-	eventsLoop = $('.events-loop')
+	itemsLoop = $('.loop')
 	itemRows = $('.item-row')
+	gridView = itemsLoop.find('.grid-view') 
+	listView = itemsLoop.find('.list-view') 
 
 	fillDays = () ->
-		$('.day-loop').each (i, day) ->
-			date = $(day).attr('data-date')
+		$('.grid-view .day-loop').each (i, gridDayLoop) ->
+			date = $(gridDayLoop).attr('data-date')
 			$.ajax
 				url: ajax_obj.ajaxurl,
 				type: 'POST',
@@ -22,13 +27,19 @@ jQuery(document).ready ($) ->
 					action: 'get_day_of_events'
 				success: (html) ->
 					if html.length
-						$(day).append(html)
-						$(day).addClass('show')
-					else
-						$(day).remove()
+						$(gridDayLoop).find('.block.placeholder').remove()
+						blocks = $(html).filter('.event-block')
+						rows = $(html).filter('.event-row')
+						blocks.each (i, block) ->
+							$(gridDayLoop).append(block)
+						$(gridDayLoop).addClass('show')
+						listDayLoop = listView.find('[data-date="'+date+'"]')
+						rows.each (i, row) ->
+							listDayLoop.append(row)
+						if itemsLoop.attr('data-view') == 'list'
+							filterItems()
 				error: (error) ->
 					console.log error
-
 			
 	identity.on 'click', () ->
 		top = $(this).position().top + $(this).innerHeight()
@@ -37,36 +48,17 @@ jQuery(document).ready ($) ->
 		, 200
 
 
-	$(window).scroll (e) ->
-		scrollTop = $(window).scrollTop()
-		headerBottom = header.position().top + header.innerHeight()
-		identityBottom = identity.innerHeight()
-		if identityBottom <= scrollTop
-			body.addClass('header-fixed')
-			$('.date-header').each () ->
-				dateTop = $(this).offset().top
-				if dateTop <= scrollTop + headerBottom
-					$(this).addClass('fixed')
-					$(this).find('.fix').css
-						top: headerBottom
-				else
-					$(this).removeClass('fixed')
-		else
-			body.removeClass('header-fixed')
-			
+	body.on 'click', '.nav-icon.burger', () ->
+		nav.addClass('open')
+		body.addClass('header-open')
+		$(window).scroll()
 
+	body.on 'click', '.nav-icon.x', () ->
+		nav.removeClass('open')
+		body.removeClass('header-open')
+		$(window).scroll()
 
-
-
-	.scroll()
-
-	body.on 'click', 'header .burger', () ->
-		header.addClass('open')
-
-	body.on 'click', 'header .x', () ->
-		header.removeClass('open')
-
-	body.on 'click', '.menu-item.archive', () ->
+	body.on 'click', '.menu-item.archive span', () ->
 		$(this).toggleClass('active')
 		$('.menu-item.year').each (i, item) ->
 			setTimeout () ->
@@ -75,31 +67,51 @@ jQuery(document).ready ($) ->
 
 	body.on 'click', '.calendar .clear', () ->
 		$('.calendar .day').addClass('active secret')
-		filterList()
+		filterItems()
 
 	body.on 'click', '.header-row .label.mobile', () ->
 		header.toggleClass('show-toggles')
 
+	body.on 'click', '.sort-header', () ->
+		col = $(this).parents('.col-header')
+		sort = col.attr('data-sort')
+
+
 	body.on 'click', '.toggle', () ->
-		view = $(this).attr('data-view')
-		filter = $(this).attr('data-filter')
-		if $(this).is('.day')
-			$('.calendar .filter.secret').removeClass('secret active')
+		toggle = $(this)
+		view = toggle.attr('data-view')
+		filter = toggle.attr('data-filter')
+		toggles = toggle.parents('.toggles').find('.toggle')
+		toggles.filter('.secret').each (i, secret) ->
+			$(secret).removeClass('active secret')
+	
 		if view
-			sib = $(this).siblings('.view')
+			sib = toggle.siblings('.view')
 			sib.removeClass('active')
 			$('.events-loop').attr('data-view', view)
-			$(this).addClass('active')
+			toggle.addClass('active')
 		else if filter
-			$(this).toggleClass('active')
-			filterList()
+			toggle.toggleClass('active')
+			if !toggles.filter('.active').length
+				toggles.addClass('active secret')
+			filterItems()
 		else if $(this).is('.hide-past')
 			$(this).toggleClass('active')
-			eventsLoop.toggleClass('hide-past')
+			itemsLoop.toggleClass('hide-past')
 
-	filterList = () ->
+	filterItems = () ->
 		filters = []
-		$('.toggle.filter').each (i, toggle) ->
+		view = itemsLoop.attr('data-view')
+		if view == 'grid'
+			toggles = $('header .toggle.filter')
+			items = itemsLoop.find('.item.block')
+		else if view == 'list'
+			if itemsLoop.is('#events-loop')
+				toggles = $('.list-header .toggle.filter')
+			else if itemsLoop.is('#partners-loop')
+				toggles = $('.header-row .toggle.filter')
+			items = itemsLoop.find('.item-row')
+		toggles.each (i, toggle) ->
 			filter = $(toggle).attr('data-filter')
 			slug = $(toggle).attr('data-slug')
 			selector = '.'+filter+'-'+slug
@@ -108,12 +120,11 @@ jQuery(document).ready ($) ->
 				filters[filter] = []
 			if $(toggle).is('.active')
 				filters[filter].push(slug)
-
-		itemRows.removeClass('hide')
+		items.removeClass('hide')
 		for tax in filters
-			selected = filters[tax]
-			itemRows.each (i, itemRow) ->
-				terms = $(itemRow).attr('data-'+tax)
+			selected = filters[tax]			
+			items.each (i, item) ->
+				terms = $(item).attr('data-'+tax)
 				if terms
 					terms = terms.split(',')
 					show = false
@@ -121,12 +132,12 @@ jQuery(document).ready ($) ->
 						if selected.indexOf(term) >= 0
 							show = true
 					if !show
-						$(itemRow).addClass('hide')
-
+						$(item).addClass('hide')
 
 	body.on 'click', '.item-link', (e) ->
 		e.preventDefault()
 		item = $(this).parents('.item')
+		overlayPlaceholder.find('.x').attr('href', location.href)
 		if item.is('.event_type-botd')
 			overlayPlaceholder.addClass('botd')
 		else
@@ -164,6 +175,7 @@ jQuery(document).ready ($) ->
 			closeOverlay()
 
 	openOverlay = (id, postType) ->
+		body.addClass('overlay-open')
 		$.ajax
 			url: ajax_obj.ajaxurl,
 			type: 'POST',
@@ -179,17 +191,26 @@ jQuery(document).ready ($) ->
 				header.removeClass('open')
 			error: (error) ->
 				console.log error
+				closeOverlay()
 
 	closeOverlay = () ->
+		body.removeClass('overlay-open')
 		overlay = $('.overlay[data-id]')
-		id = $(overlay).attr('data-id')
+		id = overlay.attr('data-id')
+		if !id
+			overlay.removeClass('show')
+			overlayPlaceholder.removeClass('show')
+			return
 		item = $('.item').filter('[data-id="'+id+'"]')
-		if $('.loop').is(['data-view="grid"']) || $('.loop').is('.exhibitions-loop')
+		parent = item.parents('.loop')
+		offset = header.innerHeight()
+		if parent.attr('data-view') == 'grid' || parent.is('.exhibitions-loop')
 			target = item.parents('.row')
 		else
 			target = item.filter('.item-row')
-		scrollTop = target.offset().top - header.innerHeight()
-		$(window).scrollTop(scrollTop - 30)
+			offset += $('.list-header .fix').innerHeight()
+		scrollTop = target.offset().top - offset
+		$(window).scrollTop(scrollTop)
 		overlay.remove()
 
 
@@ -217,50 +238,62 @@ jQuery(document).ready ($) ->
 			figure.addClass('loaded')
 
 
+	if localStorage.getItem('hide-alert')
+		alert.remove()
+	else
+		alert.addClass('show')
+
+	body.on 'click', '#alert .x', () ->
+		localStorage.setItem('hide-alert', true)
+		alert.remove()
+
+	$(window).resize () ->
+		$(window).scroll()
+	.resize()
+
+
+	checkIdentity = () ->
+		if sessionStorage.getItem('hide-identity')
+			identity.remove()
+			body.addClass('header-fixed')
+		else
+			identity.addClass('show')
+
+	$(window).scroll (e) ->
+		checkIdentity()
+		scrollTop = $(window).scrollTop()
+		mainTop = main.offset().top
+		headerHeight = header.innerHeight()
+		headerBottom = headerHeight
+		topHeight = headerHeight
+
+		$('[data-view="grid"] .date-header, [data-view="list"] .list-header').each () ->
+			thisHeader = $(this)
+			thisFix = thisHeader.find('.fix')
+			thisTop = thisHeader.offset().top
+			fixHeight = thisFix.innerHeight()
+			if thisTop <= scrollTop + headerBottom
+				thisHeader.addClass('fixed').css
+					height: fixHeight
+				thisFix.css
+					top: headerBottom
+			else
+				thisHeader.removeClass('fixed').attr('style','')
+				thisFix.attr('style','')
+
+		if !topHeight
+			topHeight = headerHeight
+
+		if mainTop <= scrollTop
+			sessionStorage.setItem('hide-identity', true)
+			identity.remove()
+			mainInner.css
+				marginTop: topHeight
+			body.addClass('header-fixed')
+		else
+			body.removeClass('header-fixed')
+
+	.scroll()
 
 	setupGallery()
 	fillDays()
-		
-
-# 	mobileNav = $('header.mobile nav')
-# 	burger = $('.burger')
-# 	title = $('nav .title')
-# 	archive = $('nav .archive')
-# 	years = $('nav .years')
-# 	header = $('.headers-mobile')
-
-# 	archive.on 'click', (e) ->
-# 		nav = $(this).parents('nav')
-# 		years = nav.find('.years')
-# 		years.toggleClass('show')
-# 		header = nav.parents('header')
-# 		$(window).resize()
-# 		if header.length
-# 			height = title.innerHeight()
-# 			if years.is('.show')
-# 				height = nav.find('.title').innerHeight() + years.innerHeight() + 15
-# 			else
-# 				height = 'auto'
-# 			header.css
-# 				height: height
-
-# 	burger.on 'click', (e) ->
-# 		mobileNav.toggleClass('show')
-
-# 	$(window).resize () ->
-# 		if title.find('.label').innerHeight() > archive.find('.label').innerHeight()
-# 			years.addClass('static')
-# 		else
-# 			years.removeClass('static')
-# 		$(window).scroll()
-# 	.resize()
-
-
-# 	$(window).scroll (e) ->
-# 		headerTop = header.position().top - $(window).scrollTop()
-# 		if headerTop <= 0
-# 			header.addClass('passed')
-# 		else
-# 			header.removeClass('passed')
-# 	.scroll()
-

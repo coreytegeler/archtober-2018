@@ -1,6 +1,4 @@
-<?php
-global $post;
-?>
+<?php global $post; ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
 <head>
@@ -20,17 +18,15 @@ global $post;
 	<?php wp_head(); ?>
 	<title><?php bloginfo( 'name' ); ?></title>
 </head>
-
 <body <?php body_class(); ?>>
-
-	<?php $identity_src = get_template_directory_uri() . '/assets/images/identity.svg'; ?>
+	<?php $logo_src = get_template_directory_uri() . '/assets/images/logo.svg'; ?>
+	<?php $background = get_field( 'background', 'options' ); ?>
 	<div id="identity" class="row">
-		<div class="fill red"></div>
-		<?= file_get_contents( $identity_src ); ?>
-		<div class="fill orange"></div>
+		<div class="logo"><?= file_get_contents( $logo_src ); ?></div>
+		<div class="background" style="background-image:url(<?= $background['url']; ?>)"></div>
 		<div class="instruct">
-			<div class="desktop">scroll of click to enter the site</div>
-			<div class="mobile">scroll or tap</div>
+			<div class="desktop">click or scroll to enter</div>
+			<div class="mobile">tap or scroll to enter</div>
 		</div>
 	</div>
 

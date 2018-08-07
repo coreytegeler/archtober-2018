@@ -33,11 +33,12 @@ $events_query = new WP_Query( array(
 	'post_type' => 'events',
 	'posts_per_page' => -1,
 	'order' => 'ASC',
-	'orderby' => 'meta_value',
+	'orderby' => 'meta_value_num',
+	'meta_key' => 'times_0_start_time',
 	'meta_query' => array (
 		'relation' => 'OR',
 		array(
-			'key' => 'start_date',
+			'key' => 'date',
 			'value' => $date_str,
 			'compare' => '=',
 			'type' => 'DATE'
@@ -45,7 +46,7 @@ $events_query = new WP_Query( array(
 		array(
 			'relation' => 'AND',
 			array(
-				'key' => 'start_date',
+				'key' => 'date',
 				'value' => $date_str,
 				'compare' => '<=',
 				'type' => 'DATE'
