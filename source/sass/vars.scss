@@ -59,14 +59,6 @@ $lg-line-height-sm: 34px;
 	}
 }
 
-@font-face {
-  font-family: 'Arnhem';
-  src: url('fonts/Arnhem-Bold.woff2') format('woff2'),
-      url('fonts/Arnhem-Bold.woff') format('woff');
-  font-weight: bold;
-  font-style: normal;
-}
-$serif: 'Arnhem', serif;
 $sanSerif: 'Helvetica Neue', Helvetica, sans-serif;
 
 @mixin sm {

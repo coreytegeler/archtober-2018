@@ -1,10 +1,11 @@
-@font-face {
-  font-family: 'Arnhem';
-  src: url("./assets/fonts/Arnhem-Bold.woff2") format("woff2"), url("./assets/fonts/Arnhem-Bold.woff") format("woff");
-  font-weight: bold;
-  font-style: normal; }
-
+/*
+Theme Name: Archtober 18
+Author: Corey Tegeler
+Author URI: https://coreytegeler.com/
+Version: 2.0
+*/
 html, body {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
   background: #c0a475;
   margin: 0;
   color: white;
@@ -350,8 +351,7 @@ header {
     header .site-title a {
       float: right;
       display: inline-block;
-      text-decoration: none; }
-    header .site-title .label {
+      text-decoration: none;
       margin-right: 45px; }
     @media (max-width: 575px) {
       header .site-title {
@@ -409,7 +409,7 @@ header {
 
 #intro {
   width: 100%;
-  padding: 30px 0 0 0;
+  padding: 75px 0 0 0;
   font-size: 45px;
   line-height: 50px;
   overflow: hidden; }
@@ -428,19 +428,23 @@ header {
 main {
   width: 100%;
   min-width: 300px;
-  padding: 30px 0 0 0;
+  padding: 0;
   background: #c0a475;
   position: relative;
   overflow-x: hidden; }
   main .main-inner {
     padding: 120px 30px 120px 30px; }
-    body.home main .main-inner, body.archive-events main .main-inner, body.single-events main .main-inner {
+    body.header-fixed main .main-inner {
+      margin-top: 90px; }
+    body.home main .main-inner, body.archive-events main .main-inner, body.single-events main .main-inner, body.partners main .main-inner {
       padding-top: 0px; }
   @media (max-width: 575px) {
     main {
       padding: 15px 0 0 0; }
       main .main-inner {
-        padding: 120px 15px 30px 15px; } }
+        padding: 120px 15px 30px 15px; }
+        body.home main .main-inner, body.archive-events main .main-inner, body.single-events main .main-inner, body.partners main .main-inner {
+          padding-top: 0px; } }
 
 .loop {
   min-height: 100vh;
@@ -519,18 +523,18 @@ main {
     color: #c0a475; }
   .loop[data-view="grid"] .botd a, .loop[data-view="grid"] .botd a:hover, .loop[data-view="grid"] .botd a:visited {
     color: #c0a475; }
-  .loop[data-view="grid"] .date-header, .loop[data-view="grid"] .institution-header {
+  .loop[data-view="grid"] .date-header {
     padding: 0; }
-    .loop[data-view="grid"] .date-header .fix, .loop[data-view="grid"] .institution-header .fix {
+    .loop[data-view="grid"] .date-header .fix {
       width: 100%;
       background: #c0a475;
       z-index: 150;
-      padding: 75px 0 15px 0;
+      padding: 65px 0 15px 0;
       position: relative; }
       @media (max-width: 768px) {
-        .loop[data-view="grid"] .date-header .fix, .loop[data-view="grid"] .institution-header .fix {
+        .loop[data-view="grid"] .date-header .fix {
           padding-top: 30px; } }
-      .loop[data-view="grid"] .date-header .fix .arrow, .loop[data-view="grid"] .institution-header .fix .arrow {
+      .loop[data-view="grid"] .date-header .fix .arrow {
         position: absolute;
         bottom: 15px;
         width: 24px;
@@ -539,31 +543,33 @@ main {
         background-repeat: no-repeat;
         background-size: contain;
         display: none; }
-        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="prev"], .loop[data-view="grid"] .institution-header .fix .arrow[data-direction="prev"] {
+        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="prev"] {
           left: 15px;
           background-image: url(./assets/images/arrow-left.svg); }
-        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="next"], .loop[data-view="grid"] .institution-header .fix .arrow[data-direction="next"] {
+        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="next"] {
           right: 15px;
           background-image: url(./assets/images/arrow-right.svg); }
-    .loop[data-view="grid"] .date-header.fixed, .loop[data-view="grid"] .institution-header.fixed {
+    .loop[data-view="grid"] .date-header.fixed {
       padding-bottom: 15px; }
-      .loop[data-view="grid"] .date-header.fixed .fix, .loop[data-view="grid"] .institution-header.fixed .fix {
+      .loop[data-view="grid"] .date-header.fixed .fix {
         position: fixed;
         left: 0;
         z-index: 300;
         padding: 75px 30px 15px 30px; }
         @media (max-width: 575px) {
-          .loop[data-view="grid"] .date-header.fixed .fix .arrow, .loop[data-view="grid"] .institution-header.fixed .fix .arrow {
+          .loop[data-view="grid"] .date-header.fixed .fix .arrow {
             display: block; } }
         @media (max-width: 768px) {
-          .loop[data-view="grid"] .date-header.fixed .fix, .loop[data-view="grid"] .institution-header.fixed .fix {
+          .loop[data-view="grid"] .date-header.fixed .fix {
             padding: 30px 15px 15px 15px;
             margin: 0; } }
     @media (max-width: 575px) {
-      .loop[data-view="grid"] .date-header, .loop[data-view="grid"] .institution-header {
+      .loop[data-view="grid"] .date-header {
         text-align: center !important; } }
+  .loop[data-view="grid"] .institution-header {
+    margin-bottom: 15px; }
   .loop[data-view="grid"] .institution.row {
-    margin-bottom: 120px; }
+    margin-bottom: 90px; }
   .loop[data-view="grid"].hide-past .day.past {
     display: none; }
   .loop[data-view="list"] {
@@ -620,7 +626,7 @@ main {
             .loop[data-view="list"] .list-header .col-header .popup:hover .popup-content, .loop[data-view="list"] .list-header .col-header .popup.open .popup-content {
               display: block; }
         .loop[data-view="list"] .list-header .col-header .popup-header, .loop[data-view="list"] .list-header .col-header .sort-header {
-          padding: 0 10px; }
+          padding: 0 15px; }
           .loop[data-view="list"] .list-header .col-header .popup-header span::after, .loop[data-view="list"] .list-header .col-header .sort-header span::after {
             width: 30px;
             height: 15px;
@@ -724,6 +730,8 @@ main {
         .loop[data-view="list"] .row {
           margin-left: 0;
           margin-right: 0; } }
+  .loop.exhibitions-loop {
+    margin-top: 0; }
   .loop.sponsors-loop {
     margin-top: 0; }
     .loop.sponsors-loop .main-sponsor:not(:last-of-type) {

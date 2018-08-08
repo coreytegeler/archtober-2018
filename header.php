@@ -19,7 +19,7 @@
 	<title><?php bloginfo( 'name' ); ?></title>
 </head>
 <?php
-$body_classes = array();
+$body_classes = array( $post->post_type, $post->post_name );
 if( is_singular( 'events' ) ):
 	array_push( $body_classes, 'overlay-open' );
 endif;

@@ -1,5 +1,13 @@
+/*
+Theme Name: Archtober 2018
+Author: Corey Tegeler
+Author URI: https://coreytegeler.com/
+Version: 2.0
+*/
+
 @import 'vars.scss';
 html, body {
+	font-family: $sanSerif;
 	background: $tan;
 	margin: 0;
 	color: $white;
@@ -358,8 +366,6 @@ header {
 			float: right;
 			display: inline-block;
 			text-decoration: none;
-		}
-		.label {
 			margin-right: 45px;
 		}
 		@include sm {
@@ -421,7 +427,7 @@ header {
 }
 #intro {
 	width: 100%;
-	padding: 30px 0 0 0;
+	padding: 75px 0 0 0;
 	@include lg-text;
 	overflow: hidden;
 	p:last-of-type {
@@ -436,13 +442,16 @@ header {
 main {
 	width: 100%;
 	min-width: 300px;
-	padding: 30px 0 0 0;
+	padding: 0;
 	background: $tan;
 	position: relative;
 	overflow-x: hidden;
 	.main-inner {
 		padding: 120px 30px 120px 30px;
-		body.home &, body.archive-events &, body.single-events & {
+		body.header-fixed & {
+			margin-top: 90px;
+		}
+		body.home &, body.archive-events &, body.single-events &, body.partners & {
 			padding-top: 0px;
 		}
 	}
@@ -450,6 +459,9 @@ main {
 		padding: 15px 0 0 0;
 		.main-inner {
 			padding: 120px 15px 30px 15px;
+			body.home &, body.archive-events &, body.single-events &, body.partners & {
+				padding-top: 0px;
+			}
 		}
 	}
 }
@@ -551,13 +563,13 @@ main {
 				color: $tan;
 			}
 		}
-		.date-header, .institution-header {
+		.date-header {
 			padding: 0;
 			.fix {
 				width: 100%;
 				background: $tan;
 				z-index: 150;
-				padding: 75px 0 15px 0;
+				padding: 65px 0 15px 0;
 				position: relative;
 				@include md {
 			    padding-top: 30px;
@@ -603,8 +615,11 @@ main {
 				text-align: center !important;
 			}
 		}
+		.institution-header {
+			margin-bottom: 15px;
+		}
 		.institution.row {
-			margin-bottom: 120px;
+			margin-bottom: 90px;
 		}
 		&.hide-past .day.past {
 			display: none;
@@ -669,7 +684,7 @@ main {
 					}
 				}
 				.popup-header, .sort-header {
-					padding: 0 10px;
+					padding: 0 15px;
 					span::after {
 						width: 30px;
 						height: 15px;
@@ -809,6 +824,9 @@ main {
 				margin-right: 0;
 			}
 		}
+	}
+	&.exhibitions-loop {
+		margin-top: 0;
 	}
 	&.sponsors-loop {
 		margin-top: 0;
