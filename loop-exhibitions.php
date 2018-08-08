@@ -8,7 +8,7 @@
 	foreach( $institutions as $institution ):
 		echo '<div class="institution row">';
 			echo '<div class="col col-12">';
-				echo '<div class="institution-header">' . $institution->name . '</div>';
+				echo '<div class="institution-header"><div class="fix">' . $institution->name . '</div></div>';
 			echo '</div>';
 			$exhibit_query = new WP_Query( array(
 				'post_type' => 'exhibitions',

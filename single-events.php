@@ -24,7 +24,6 @@ $archive_url = get_permalink( get_page_by_path( 'events' )->ID );
 	<a href="<?= $archive_url; ?>" class="icon-btn x" onclick="void(0)"></a>
 	<div class="row overlay-inner">
 		<div class="col col-12 col-sm-6">
-
 			<div class="piece event-type desktop">
 				<?php
 				if( $is_botd ):
@@ -97,11 +96,15 @@ $archive_url = get_permalink( get_page_by_path( 'events' )->ID );
 
 		<div class="col col-12 col-sm-6 fixed">
 			<div class="piece event-type mobile">
-				<?php if( $is_botd ): ?>
-					Building of the Day
-				<?php else: ?>
-					<?= the_terms( $id, 'event_type', '', ', ' ); ?>
-				<?php endif; ?>
+				<?php
+				if( $is_botd ):
+					echo 'Building of the Day';
+				elseif( $event_types ):
+					foreach ( $event_types as $event_type ):
+						echo '<span>'.$event_type->name.'</span>';
+					endforeach;
+				endif;
+				?>
 			</div>
 			<?php
 			if( $images ):

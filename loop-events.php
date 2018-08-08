@@ -1,4 +1,7 @@
 <?php
+$et_param = get_query_var( 'event_types' );
+$ed_param = get_query_var( 'event_date' );
+
 $today = date( 'm/j/y' );
 $botd_id = get_term_by( 'slug', 'botd', 'event_type' )->term_id;
 $intro = get_field( 'intro', 'option' );
@@ -8,7 +11,7 @@ echo '<div id="intro">';
 	echo '<div class="lg"></div>';
 echo '</div>';
 ?>
-<div id="events-loop" class="loop events-loop" data-view="grid">
+<div id="events-loop" class="loop events-loop" data-view="<?= $et_param || $ed_param ? 'list' : 'grid'; ?>">
 	<div class="grid-view">
 		<?php	
 		$day_int = 1;
@@ -20,11 +23,20 @@ echo '</div>';
 			echo '<div class="row day day-loop'.$past.'" data-date="'.$date_str.'">';
 				echo '<div class="col col-12">';
 					echo '<div class="date-header">';
-						echo '<div class="fix">'.$date_format.'</div>';
+						echo '<div class="fix">';
+							if( $day_int != 1 ):
+								echo '<div class="arrow" data-direction="prev"></div>';
+							endif;
+								echo $date_format;
+							if( $day_int != 31 ):
+								echo '<div class="arrow" data-direction="next"></div>';
+							endif;
+						echo '</div>';
 					echo '</div>';
 				echo '</div>';
 
-				echo '<div class="event-block botd block event placeholder col-12 col-sm-12 col-md-8 col-lg-6"><div class="item-link"></div></div>';
+				// echo '<div class="event-block botd block event placeholder col-12 col-sm-12 col-md-8 col-lg-6"><div class="item-link"></div></div>';
+				echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
 				echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
 				echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
 
@@ -48,10 +60,17 @@ echo '</div>';
 							    'hide_empty' => false,
 								) );
 								foreach( $event_types as $event_type ):
-									echo '<div class="toggle filter active secret" data-filter="event-type" data-slug="'.$event_type->slug.'">';
+									$filter_classes = 'toggle filter';
+									if( $et_param && $et_param == $event_type->slug ):
+										$filter_classes .= ' active';
+									elseif( !$et_param ):
+										$filter_classes .= ' active secret';
+									endif;
+									echo '<div class="'.$filter_classes.'" data-filter="event-type" data-slug="'.$event_type->slug.'" onclick="void(0)">';
 										echo $event_type->name;
 									echo '</div>';
 								endforeach;
+								echo '<div class="toggle filter clear" data-filter="event-type" data-slug="clear" onclick="void(0)">Reset filters</div>';
 								?>
 							</div>
 						</div>
@@ -70,13 +89,19 @@ echo '</div>';
 								$day = 1;
 								while( $day <= 31 ):
 									$date = '10/'.$day.'/18';
-									echo '<div class="toggle filter active secret day" data-filter="date" data-slug="'.$date.'">';
+									$filter_classes = 'day toggle filter';
+									if( $ed_param && $ed_param == $date ):
+										$filter_classes .= ' active';
+									elseif( !$ed_param ):
+										$filter_classes .= ' active secret';
+									endif; 
+									echo '<div class="'.$filter_classes.'" data-filter="date" data-slug="'.$date.'" onclick="void(0)">';
 										echo '<div class="square"><span>'.$day.'</span></div>';
 									echo '</div>';
 									$day++;
 								endwhile;
 								?>
-								<div class="clear-space"><div class="clear">clear</div></div>
+								<div class="clear-space"><div class="clear" onclick="void(0)">clear</div></div>
 							</div>
 						</div>
 					</div>
@@ -93,10 +118,11 @@ echo '</div>';
 							    'hide_empty' => false,
 								) );
 								foreach( $times_of_day as $time_of_day ):
-									echo '<div class="toggle filter active secret" data-filter="time-of-day" data-slug="'.$time_of_day->slug.'">';
+									echo '<div class="toggle filter active secret" data-filter="time-of-day" data-slug="'.$time_of_day->slug.'" onclick="void(0)">';
 										echo $time_of_day->name;
 									echo '</div>';
 								endforeach;
+								echo '<div class="toggle filter clear" data-filter="time-of-day" data-slug="clear" onclick="void(0)">clear</div>';
 								?>
 							</div>
 						</div>

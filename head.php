@@ -39,9 +39,9 @@
 		</div>
 		<div class="col col-12 col-sm-6">
 			<div class="footer">
-				<a href="<?= get_field( 'privacy_policy', 'options' ) ?>" class="pp">Privacy Policy</a>
+				<a href="<?= get_field( 'privacy_policy', 'options' ) ?>" class="pp" target="_blank">Privacy Policy</a>
 				<!-- <a href="<?#= get_field( '', 'options' ) ?>" class="subscribe">Subscribe to Email</a> -->
-				<a href="<?= get_field( 'donate', 'options' ) ?>" class="donate">Donate</a>
+				<a href="<?= get_field( 'donate', 'options' ) ?>" class="donate" target="_blank">Donate</a>
 			</div>
 		</div>
 	</div>
@@ -72,11 +72,13 @@
 			else:
 				echo '<div class="label">'.$page_title.'</div>';
 			endif;
+			$et_param = get_query_var( 'event_types' );
 			if( is_home() || $post->post_name == 'events' || is_singular( 'events' ) ): ?>
 				<div class="toggles">
 					<div class="desktop">
-						<div class="toggle view active" data-view="grid">day view</div>
-						<div class="toggle view" data-view="list">list view</div>
+						<div class="toggle view <?= $et_param ? '' : 'active' ?>" data-view="grid">day view</div>
+						<div class="toggle view <?= $et_param ? 'active' : '' ?>" data-view="list">list view</div>
+						<div class="toggle hide-past" onclick="void(0)">hide past events</div>
 					</div>
 					<div class="mobile">
 						<?php 
@@ -85,19 +87,26 @@
 							'hide_empty' => false,
 						) );
 						foreach( $event_types as $event_type ):
-							echo '<div class="toggle filter active" data-filter="event-type" data-slug="'.$event_type->slug.'" onclick="void(0)">';
+							$filter_classes = 'toggle filter';
+							if( $et_param && $et_param == $event_type->slug ):
+								$filter_classes .= ' active';
+							elseif( !$et_param ):
+								$filter_classes .= ' active secret';
+							endif;
+							echo '<div class="'.$filter_classes.'" data-filter="event-type" data-slug="'.$event_type->slug.'" onclick="void(0)">';
 								echo $event_type->name;
 							echo '</div>';
 						endforeach;
 						?>
+						<div class="toggle hide-past" onclick="void(0)">hide past events</div>
+						<div class="toggle filter clear" data-filter="event-type" data-slug="clear" onclick="void(0)">reset filters</div>
 						</br>
 					</div>				
-					<div class="toggle hide-past" onclick="void(0)">hide past events</div>
 				</div>
 			<?php elseif( is_singular( 'partners' ) || $post->post_name == 'partners' || $post->post_type == 'partners' ): ?>
 				<div class="toggles">
 					<?php
-					$media_id = get_termx_by( 'slug', 'media', 'partner_type' );
+					$media_id = get_term_by( 'slug', 'media', 'partner_type' )->term_id;
 					$partner_types = get_terms( array(
 						'orderby' => 'term_order',
 						'taxonomy' => 'partner_type',
@@ -114,7 +123,7 @@
 			<?php endif; ?>
 		</div>
 
-		<div class="col col-1 col-sm-3 site-title">
+		<div class="col col-0 col-sm-3 site-title">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
 				<div class="label"><?php bloginfo( 'name' ); ?></div>
 			</a>

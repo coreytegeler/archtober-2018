@@ -18,7 +18,13 @@
 	<?php wp_head(); ?>
 	<title><?php bloginfo( 'name' ); ?></title>
 </head>
-<body <?php body_class(); ?>>
+<?php
+$body_classes = array();
+if( is_singular( 'events' ) ):
+	array_push( $body_classes, 'overlay-open' );
+endif;
+?>
+<body <?php body_class( $body_classes ); ?>>
 	<?php $logo_src = get_template_directory_uri() . '/assets/images/logo.svg'; ?>
 	<?php $background = get_field( 'background', 'options' ); ?>
 	<div id="identity" class="row">

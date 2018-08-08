@@ -15,6 +15,11 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 24px;
   line-height: 30px; }
+  html *, body * {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: bold; }
   @media (max-width: 575px) {
     html, body {
       font-size: 20px;
@@ -22,11 +27,16 @@ html, body {
   html.overlay-open, body.overlay-open {
     overflow: hidden; }
   @media (max-width: 575px) {
-    html.header-open, body.header-open {
-      overflow: hidden; } }
+    html, body {
+      content: 'mobile'; }
+      html.header-open, body.header-open {
+        overflow: hidden; } }
 
 a, a:visited, a:hover, a:focus {
   color: white; }
+
+strong, b {
+  font-weight: bold; }
 
 h1, h2, h3, h4 {
   margin: 0;
@@ -80,7 +90,7 @@ p {
 #identity {
   width: 100vw;
   height: 100vh;
-  margin: 0;
+  margin: 0 0 120px 0;
   padding: 0;
   position: relative;
   cursor: pointer;
@@ -92,10 +102,10 @@ p {
     opacity: 1; }
   #identity .logo {
     width: calc(100% - 60px);
-    height: calc(100% - 60px);
+    height: calc(100% - 120px);
     position: absolute;
     left: 30px;
-    top: 30px;
+    top: 60px;
     display: -webkit-box;
     display: flex;
     z-index: 150; }
@@ -118,13 +128,16 @@ p {
     padding: 30px;
     position: absolute;
     left: 0;
-    bottom: 30px;
+    bottom: 0;
     text-align: center;
     z-index: 100;
     background-image: url(./assets/images/arrow-down.svg);
     background-repeat: no-repeat;
     background-position: center calc(100% - 10px);
     background-size: auto 15px; }
+    @media (max-width: 575px) {
+      #identity .instruct {
+        bottom: 60px; } }
 
 .nav-icon {
   width: 1em;
@@ -133,7 +146,7 @@ p {
   position: fixed;
   right: 30px;
   top: 30px;
-  z-index: 350; }
+  z-index: 600; }
   @media (max-width: 575px) {
     .nav-icon {
       right: 15px;
@@ -154,7 +167,7 @@ nav {
   top: 0;
   padding: 30px;
   background: #ff6f00;
-  z-index: 300;
+  z-index: 500;
   display: none;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
@@ -249,10 +262,17 @@ nav {
       nav .social .icons a, nav .social .icons a:hover, nav .social .icons a:visited {
         margin-right: 15px;
         text-decoration: none;
-        border: 0; }
+        border: 0;
+        display: -webkit-box;
+        display: flex;
+        align-content: bottom; }
       nav .social .icons svg {
-        width: 24px;
-        height: 24px; }
+        width: auto;
+        height: 24px;
+        margin: 0; }
+    @media (max-width: 575px) {
+      nav .social {
+        margin-bottom: 15px; } }
   nav.open {
     display: -webkit-box;
     display: flex; }
@@ -274,7 +294,7 @@ header {
   width: 100%;
   padding: 0 30px 30px 30px;
   background: #c0a475;
-  z-index: 200;
+  z-index: 400;
   display: none; }
   @media (max-width: 575px) {
     header {
@@ -289,7 +309,7 @@ header {
     text-transform: lowercase; }
     header .page-title .toggles .toggle {
       width: auto;
-      display: table;
+      display: block;
       margin-right: 15px; }
     @media (max-width: 575px) {
       header .page-title .toggles {
@@ -303,10 +323,28 @@ header {
     header .page-title .label.mobile:hover {
       cursor: pointer; }
   @media (max-width: 575px) {
-    header.show-toggles .page-title .toggles {
-      display: table; }
-    header.show-toggles .page-title .label.mobile {
-      background-image: url(./assets/images/arrow-up.svg); } }
+    header.show-toggles .page-title, body.header-fixed header.show-toggles .page-title {
+      display: -webkit-box;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+              flex-direction: column; }
+      header.show-toggles .page-title .toggles .toggle, body.header-fixed header.show-toggles .page-title .toggles .toggle {
+        clear: both; }
+      header.show-toggles .page-title .label.mobile, body.header-fixed header.show-toggles .page-title .label.mobile {
+        background-image: url(./assets/images/arrow-up.svg); } }
+  @media (max-width: 575px) {
+    header.show-toggles, body.header-fixed header.show-toggles {
+      height: 100%;
+      max-height: 100%;
+      padding: 15px 15px 0 15px; }
+      header.show-toggles .row, body.header-fixed header.show-toggles .row {
+        height: 100%; }
+      header.show-toggles .toggles, body.header-fixed header.show-toggles .toggles {
+        display: block;
+        height: 100%;
+        padding-bottom: 15px;
+        overflow: scroll; } }
   header .site-title {
     text-align: right; }
     header .site-title a {
@@ -322,17 +360,15 @@ header {
         width: 20px; }
         header .site-title .label {
           display: none; } }
-  .header-fixed header {
+  body.header-fixed header {
     position: fixed;
     left: 0;
     top: 0;
-    padding: 30px;
-    max-height: 100%;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
+    padding: 30px 30px 24px 30px;
+    max-height: calc(100% - 60px);
     display: block; }
     @media (max-width: 575px) {
-      .header-fixed header {
+      body.header-fixed header {
         padding: 15px; } }
 
 .toggles {
@@ -362,6 +398,10 @@ header {
       display: inline-block;
       margin: 0 5px 0 0;
       border: 2px solid white; }
+    .toggles .toggle.clear {
+      margin-top: 15px; }
+      .toggles .toggle.clear::before {
+        opacity: 0; }
     .toggles .toggle.active:not(.secret)::before {
       background: #ff6f00; }
     .toggles .toggle:hover {
@@ -369,7 +409,7 @@ header {
 
 #intro {
   width: 100%;
-  padding: 30px 0;
+  padding: 30px 0 0 0;
   font-size: 45px;
   line-height: 50px;
   overflow: hidden; }
@@ -381,13 +421,9 @@ header {
     margin: 0; }
   @media (max-width: 575px) {
     #intro {
-      padding: 0 15px 15px 15px;
-      font-size: 24px;
-      line-height: 30px; } }
-  @media (max-width: 575px) and (max-width: 575px) {
-    #intro {
-      font-size: 20px;
-      line-height: 24px; } }
+      padding: 30px 0 0 0;
+      font-size: 30px;
+      line-height: 34px; } }
 
 main {
   width: 100%;
@@ -398,8 +434,8 @@ main {
   overflow-x: hidden; }
   main .main-inner {
     padding: 120px 30px 120px 30px; }
-    body.home main .main-inner {
-      padding-top: 0; }
+    body.home main .main-inner, body.archive-events main .main-inner, body.single-events main .main-inner {
+      padding-top: 0px; }
   @media (max-width: 575px) {
     main {
       padding: 15px 0 0 0; }
@@ -407,16 +443,17 @@ main {
         padding: 120px 15px 30px 15px; } }
 
 .loop {
-  min-height: 50vh;
+  min-height: 100vh;
   margin: 15px 0 0 0; }
   .loop .item.hide {
     display: none !important; }
   .loop[data-view="grid"] .list-view {
     display: none; }
   .loop[data-view="grid"] .block {
-    margin-top: 30px; }
+    margin-top: 5px;
+    margin-bottom: 25px; }
     .loop[data-view="grid"] .block .item-link {
-      min-height: 12em;
+      min-height: 15vw;
       padding: 15px;
       display: -webkit-box;
       display: flex;
@@ -438,7 +475,7 @@ main {
         padding: 13px;
         border: 2px solid white;
         color: white;
-        background: transparent; }
+        background: transparent !important; }
         .loop[data-view="grid"] .block .item-link:hover .primary {
           opacity: 0; }
           @media (max-width: 575px) {
@@ -446,11 +483,13 @@ main {
               display: block !important; } }
         .loop[data-view="grid"] .block .item-link:hover .secondary {
           width: 100%;
-          height: calc(100% - 60px);
+          height: calc(100% - 15px);
           display: block;
           position: absolute;
           left: 0;
-          top: 15px;
+          top: 13px;
+          padding-left: 13px;
+          padding-right: 13px;
           background: #c0a475; }
       @media (max-width: 575px) {
         .loop[data-view="grid"] .block .item-link {
@@ -480,24 +519,48 @@ main {
     color: #c0a475; }
   .loop[data-view="grid"] .botd a, .loop[data-view="grid"] .botd a:hover, .loop[data-view="grid"] .botd a:visited {
     color: #c0a475; }
-  .loop[data-view="grid"] .date-header {
+  .loop[data-view="grid"] .date-header, .loop[data-view="grid"] .institution-header {
     padding: 0; }
-    .loop[data-view="grid"] .date-header .fix {
+    .loop[data-view="grid"] .date-header .fix, .loop[data-view="grid"] .institution-header .fix {
       width: 100%;
       background: #c0a475;
       z-index: 150;
-      padding: 90px 0 15px 0; }
-    .loop[data-view="grid"] .date-header.fixed {
+      padding: 75px 0 15px 0;
+      position: relative; }
+      @media (max-width: 768px) {
+        .loop[data-view="grid"] .date-header .fix, .loop[data-view="grid"] .institution-header .fix {
+          padding-top: 30px; } }
+      .loop[data-view="grid"] .date-header .fix .arrow, .loop[data-view="grid"] .institution-header .fix .arrow {
+        position: absolute;
+        bottom: 15px;
+        width: 24px;
+        height: 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: none; }
+        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="prev"], .loop[data-view="grid"] .institution-header .fix .arrow[data-direction="prev"] {
+          left: 15px;
+          background-image: url(./assets/images/arrow-left.svg); }
+        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="next"], .loop[data-view="grid"] .institution-header .fix .arrow[data-direction="next"] {
+          right: 15px;
+          background-image: url(./assets/images/arrow-right.svg); }
+    .loop[data-view="grid"] .date-header.fixed, .loop[data-view="grid"] .institution-header.fixed {
       padding-bottom: 15px; }
-      .loop[data-view="grid"] .date-header.fixed .fix {
+      .loop[data-view="grid"] .date-header.fixed .fix, .loop[data-view="grid"] .institution-header.fixed .fix {
         position: fixed;
         left: 0;
-        padding: 90px 30px 15px 30px; }
+        z-index: 300;
+        padding: 75px 30px 15px 30px; }
         @media (max-width: 575px) {
-          .loop[data-view="grid"] .date-header.fixed .fix {
-            padding-top: 30px; } }
+          .loop[data-view="grid"] .date-header.fixed .fix .arrow, .loop[data-view="grid"] .institution-header.fixed .fix .arrow {
+            display: block; } }
+        @media (max-width: 768px) {
+          .loop[data-view="grid"] .date-header.fixed .fix, .loop[data-view="grid"] .institution-header.fixed .fix {
+            padding: 30px 15px 15px 15px;
+            margin: 0; } }
     @media (max-width: 575px) {
-      .loop[data-view="grid"] .date-header {
+      .loop[data-view="grid"] .date-header, .loop[data-view="grid"] .institution-header {
         text-align: center !important; } }
   .loop[data-view="grid"] .institution.row {
     margin-bottom: 120px; }
@@ -511,13 +574,14 @@ main {
     .loop[data-view="list"] .grid-view {
       display: none; }
     .loop[data-view="list"] .list-header {
+      margin-top: 15px;
       padding: 0 15px; }
       @media (max-width: 575px) {
         .loop[data-view="list"] .list-header {
           display: none; } }
       .loop[data-view="list"] .list-header .fix {
         width: auto;
-        padding: 0 15px;
+        padding: 60px 15px 0 15px;
         margin: 0 -15px;
         display: -webkit-box;
         display: flex;
@@ -531,12 +595,11 @@ main {
         position: fixed;
         left: 0;
         z-index: 150;
-        padding: 0 15px;
         margin: 0; }
       .loop[data-view="list"] .list-header .col-header {
         padding-top: 15px;
-        padding-bottom: 30px;
-        margin: 2px 0 0 0;
+        padding-bottom: 20px;
+        margin: 0;
         position: relative; }
         .loop[data-view="list"] .list-header .col-header .popup {
           width: 100%;
@@ -576,7 +639,7 @@ main {
         .loop[data-view="list"] .list-header .col-header .popup-content {
           display: none;
           padding: 15px 10px 30px 15px;
-          max-height: 50vh;
+          max-height: 60vh;
           overflow-y: scroll;
           -webkit-overflow-scrolling: touch; }
         .loop[data-view="list"] .list-header .col-header .toggles {
@@ -640,22 +703,20 @@ main {
         .loop[data-view="list"] .item-row .row .col {
           margin: 0 0 5px 0;
           padding: 0; } }
-    .loop[data-view="list"] .partner-row {
-      width: 100%;
-      padding: 30px 30px 60px 30px;
-      display: table; }
-      @media (max-width: 575px) {
-        .loop[data-view="list"] .partner-row {
-          padding: 0 0 15px 0;
-          margin: 0 0 15px 0;
-          display: block; } }
-    .loop[data-view="list"] .item-link {
+    .loop[data-view="list"] .item-link, .loop[data-view="list"] .partner-row {
       width: 100%;
       padding: 30px;
       display: table; }
-      .loop[data-view="list"] .item-link:hover {
-        text-decoration: none;
-        background: #94aa0c; }
+      .loop[data-view="list"] .item-link .row, .loop[data-view="list"] .partner-row .row {
+        margin: 0; }
+      @media (max-width: 575px) {
+        .loop[data-view="list"] .item-link, .loop[data-view="list"] .partner-row {
+          padding: 15px;
+          margin: 0 15px;
+          display: block; } }
+    .loop[data-view="list"] .item-link:hover {
+      text-decoration: none;
+      background: #94aa0c; }
     @media (max-width: 575px) {
       .loop[data-view="list"] {
         margin-left: 0;
@@ -665,6 +726,8 @@ main {
           margin-right: 0; } }
   .loop.sponsors-loop {
     margin-top: 0; }
+    .loop.sponsors-loop .main-sponsor:not(:last-of-type) {
+      margin-bottom: 90px; }
     .loop.sponsors-loop .sponsor-type {
       margin-bottom: 120px; }
     .loop.sponsors-loop .sponsor-type-name {
@@ -688,7 +751,7 @@ main {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 500;
+  z-index: 700;
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
@@ -708,7 +771,7 @@ main {
   .overlay .fixed {
     position: fixed;
     right: 15px;
-    top: 90px; }
+    top: 180px; }
     @media (max-width: 575px) {
       .overlay .fixed {
         position: static;
@@ -716,6 +779,11 @@ main {
         top: auto; } }
   .overlay .piece {
     margin: 0 0 30px 0; }
+    .overlay .piece.title {
+      margin-top: 120px; }
+      @media (max-width: 575px) {
+        .overlay .piece.title {
+          margin-top: 0; } }
     .overlay .piece span:not(:last-of-type)::after {
       content: ', '; }
     .overlay .piece a {
@@ -791,7 +859,7 @@ main {
       display: block; }
   @media (max-width: 575px) {
     .gallery {
-      margin: 90px 0; } }
+      margin: 60px 0; } }
 
 .event-overlay.botd {
   background: white;

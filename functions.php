@@ -1,5 +1,5 @@
 <?php
-$ver = '2.0.4';
+$ver = '2.0.9';
 function archtober_scripts() {
 		wp_enqueue_style( 'style', get_stylesheet_uri() );
 		wp_enqueue_script( 'jquery', get_template_directory_uri() . '/assets/js/jquery-3.3.1.min.js', array(), true );
@@ -32,6 +32,13 @@ function get_day_of_events() {
 	include( locate_template( 'loop-day.php' ) );
 	die();
 }
+
+function add_query_vars_filter( $vars ) {
+  $vars[] = 'event_types';
+  $vars[] = 'event_date';
+  return $vars;
+}
+add_filter( 'query_vars', 'add_query_vars_filter' );
 
 function register_events() {
 	register_post_type( 'events',

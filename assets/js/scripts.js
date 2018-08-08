@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-  var alert, body, burger, checkIdentity, closeOverlay, fillDays, filterItems, gridView, header, headerPlaceholder, identity, intro, itemRows, itemsLoop, listView, main, mainInner, nav, openOverlay, overlayPlaceholder, setupGallery;
+  var alert, body, burger, checkIdentity, closeOverlay, fillDays, filterItems, fixMobileView, gridView, header, headerPlaceholder, identity, intro, isMobile, itemRows, itemsLoop, listView, main, mainInner, nav, openOverlay, overlayPlaceholder, setupGallery;
   body = $('body');
   nav = $('nav');
   header = $('header');
@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
             rows.each(function(i, row) {
               return listDayLoop.append(row);
             });
-            if (itemsLoop.attr('data-view') === 'list') {
+            if (itemsLoop.attr('data-view') === 'list' || isMobile()) {
               return filterItems();
             }
           }
@@ -54,10 +54,12 @@ jQuery(document).ready(function($) {
   };
   identity.on('click', function() {
     var top;
-    top = $(this).position().top + $(this).innerHeight();
+    top = $(this).innerHeight();
     return $('html, body').animate({
       scrollTop: top + 'px'
-    }, 200);
+    }, 200, function() {
+      return identity.remove();
+    });
   });
   body.on('click', '.nav-icon.burger', function() {
     nav.addClass('open');
@@ -89,8 +91,25 @@ jQuery(document).ready(function($) {
     col = $(this).parents('.col-header');
     return sort = col.attr('data-sort');
   });
+  body.on('click', '.date-header .arrow', function() {
+    var day, direction, targetDate, targetDay, targetTop;
+    direction = $(this).attr('data-direction');
+    day = $(this).parents('.day-loop');
+    if (direction === 'next') {
+      targetDay = day.next();
+    } else if (direction === 'prev') {
+      targetDay = day.prev();
+    } else {
+      return;
+    }
+    targetDate = targetDay.find('.date-header');
+    targetTop = targetDate.offset().top - header.innerHeight() + 5;
+    return $('html, body').animate({
+      scrollTop: targetTop + 'px'
+    }, 200);
+  });
   body.on('click', '.toggle', function() {
-    var filter, sib, toggle, toggles, view;
+    var filter, sib, slug, toggle, toggles, view;
     toggle = $(this);
     view = toggle.attr('data-view');
     filter = toggle.attr('data-filter');
@@ -102,10 +121,15 @@ jQuery(document).ready(function($) {
       sib = toggle.siblings('.view');
       sib.removeClass('active');
       $('.events-loop').attr('data-view', view);
-      return toggle.addClass('active');
+      toggle.addClass('active');
+      $(window).scroll();
+      return filterItems();
     } else if (filter) {
-      toggle.toggleClass('active');
-      if (!toggles.filter('.active').length) {
+      slug = toggle.attr('data-slug');
+      if (slug !== 'clear') {
+        toggle.toggleClass('active');
+      }
+      if (!toggles.filter('.active').length || slug === 'clear') {
         toggles.addClass('active secret');
       }
       return filterItems();
@@ -118,7 +142,7 @@ jQuery(document).ready(function($) {
     var filters, items, j, len, results, selected, tax, toggles, view;
     filters = [];
     view = itemsLoop.attr('data-view');
-    if (view === 'grid') {
+    if (view === 'grid' && isMobile()) {
       toggles = $('header .toggle.filter');
       items = itemsLoop.find('.item.block');
     } else if (view === 'list') {
@@ -129,48 +153,54 @@ jQuery(document).ready(function($) {
       }
       items = itemsLoop.find('.item-row');
     }
-    toggles.each(function(i, toggle) {
-      var filter, selector, slug;
-      filter = $(toggle).attr('data-filter');
-      slug = $(toggle).attr('data-slug');
-      selector = '.' + filter + '-' + slug;
-      if (!filters[filter]) {
-        filters.push(filter);
-        filters[filter] = [];
-      }
-      if ($(toggle).is('.active')) {
-        return filters[filter].push(slug);
-      }
-    });
-    items.removeClass('hide');
-    results = [];
-    for (j = 0, len = filters.length; j < len; j++) {
-      tax = filters[j];
-      selected = filters[tax];
-      results.push(items.each(function(i, item) {
-        var k, len1, show, term, terms;
-        terms = $(item).attr('data-' + tax);
-        if (terms) {
-          terms = terms.split(',');
-          show = false;
-          for (k = 0, len1 = terms.length; k < len1; k++) {
-            term = terms[k];
-            if (selected.indexOf(term) >= 0) {
-              show = true;
+    if (toggles) {
+      toggles.each(function(i, toggle) {
+        var filter, selector, slug;
+        filter = $(toggle).attr('data-filter');
+        slug = $(toggle).attr('data-slug');
+        selector = '.' + filter + '-' + slug;
+        if (!filters[filter]) {
+          filters.push(filter);
+          filters[filter] = [];
+        }
+        if ($(toggle).is('.active')) {
+          return filters[filter].push(slug);
+        }
+      });
+      items.removeClass('hide');
+      results = [];
+      for (j = 0, len = filters.length; j < len; j++) {
+        tax = filters[j];
+        selected = filters[tax];
+        results.push(items.each(function(i, item) {
+          var k, len1, show, term, terms;
+          terms = $(item).attr('data-' + tax);
+          if (terms) {
+            terms = terms.split(',');
+            show = false;
+            for (k = 0, len1 = terms.length; k < len1; k++) {
+              term = terms[k];
+              if (selected.indexOf(term) >= 0) {
+                show = true;
+              }
+            }
+            if (!show) {
+              return $(item).addClass('hide');
             }
           }
-          if (!show) {
-            return $(item).addClass('hide');
-          }
-        }
-      }));
+        }));
+      }
+      return results;
     }
-    return results;
   };
   body.on('click', '.item-link', function(e) {
     var id, item, postType, state, url;
     e.preventDefault();
     item = $(this).parents('.item');
+    id = item.attr('data-id');
+    if (!id) {
+      return;
+    }
     overlayPlaceholder.find('.x').attr('href', location.href);
     if (item.is('.event_type-botd')) {
       overlayPlaceholder.addClass('botd');
@@ -179,7 +209,6 @@ jQuery(document).ready(function($) {
     }
     overlayPlaceholder.addClass('show');
     url = this.href;
-    id = item.attr('data-id');
     postType = item.attr('data-post-type');
     state = {
       action: 'open',
@@ -215,7 +244,6 @@ jQuery(document).ready(function($) {
     }
   };
   openOverlay = function(id, postType) {
-    body.addClass('overlay-open');
     return $.ajax({
       url: ajax_obj.ajaxurl,
       type: 'POST',
@@ -226,6 +254,7 @@ jQuery(document).ready(function($) {
         action: 'get_overlay'
       },
       success: function(html) {
+        body.addClass('overlay-open');
         main.prepend(html);
         setupGallery();
         overlayPlaceholder.removeClass('show');
@@ -242,12 +271,12 @@ jQuery(document).ready(function($) {
     body.removeClass('overlay-open');
     overlay = $('.overlay[data-id]');
     id = overlay.attr('data-id');
-    if (!id) {
-      overlay.removeClass('show');
+    item = $('.item').filter('[data-id="' + id + '"]');
+    if (!item.length) {
+      overlay.remove();
       overlayPlaceholder.removeClass('show');
       return;
     }
-    item = $('.item').filter('[data-id="' + id + '"]');
     parent = item.parents('.loop');
     offset = header.innerHeight();
     if (parent.attr('data-view') === 'grid' || parent.is('.exhibitions-loop')) {
@@ -289,13 +318,13 @@ jQuery(document).ready(function($) {
       return figure.addClass('loaded');
     });
   };
-  if (localStorage.getItem('hide-alert')) {
+  if (sessionStorage.getItem('hide-alert')) {
     alert.remove();
   } else {
     alert.addClass('show');
   }
   body.on('click', '#alert .x', function() {
-    localStorage.setItem('hide-alert', true);
+    sessionStorage.setItem('hide-alert', true);
     return alert.remove();
   });
   $(window).resize(function() {
@@ -307,6 +336,21 @@ jQuery(document).ready(function($) {
       return body.addClass('header-fixed');
     } else {
       return identity.addClass('show');
+    }
+  };
+  isMobile = function() {
+    var size;
+    size = body.css('content').replace(/"/g, '');
+    if (size === 'mobile') {
+      return true;
+    }
+    return false;
+  };
+  fixMobileView = function() {
+    if (isMobile() && itemsLoop.filter('#events-loop')) {
+      itemsLoop.attr('data-view', 'grid');
+      $('.toggle[data-view="grid"]').addClass('active');
+      return $('.toggle[data-view="list"]').removeClass('active');
     }
   };
   $(window).scroll(function(e) {
@@ -340,7 +384,10 @@ jQuery(document).ready(function($) {
     }
     if (mainTop <= scrollTop) {
       sessionStorage.setItem('hide-identity', true);
-      identity.remove();
+      if ($('#identity').length) {
+        identity.remove();
+        $(window).scrollTop(0);
+      }
       mainInner.css({
         marginTop: topHeight
       });
@@ -349,6 +396,7 @@ jQuery(document).ready(function($) {
       return body.removeClass('header-fixed');
     }
   }).scroll();
+  fixMobileView();
   setupGallery();
   return fillDays();
 });
