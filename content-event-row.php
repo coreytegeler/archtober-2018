@@ -1,6 +1,6 @@
 <?php
 $id = get_the_ID();
-$today = date( 'm/j/y' );
+// $today = date( 'm/j/y' );
 $start_date = get_field( 'date' );
 $end_date = get_field( 'end_date' );
 $time_of_day_str = get_terms_str( $id, 'time_of_day' );
@@ -15,36 +15,11 @@ if( has_term( 'botd', 'event_type' ) ):
 	array_push( $block_classes, 'botd' );
 	array_push( $row_classes, 'botd' );
 endif;
-$today = date_format($test, 'm/j/y');
-if( $start_date < $today && ( !$end_date || $end_date < $today ) ):
-	array_push( $row_classes, 'past' );
-endif;
+// $today = date_format($test, 'm/j/y');
+// if( $start_date < $today && ( !$end_date || $end_date < $today ) ):
+// 	array_push( $row_classes, 'past' );
+// endif;
 ?>
-<div data-id="<?= $id; ?>" data-post-type="events" data-event-type="<?= $event_type_str; ?>" <?php post_class( $block_classes ); ?>>
-	<a class="item-link" href="<?= $permalink; ?>">
-		<div class="row">
-			<div class="col col-12 primary text">
-				<div class="time"><?= $time_span ?></div>
-				<div class="event-title"><?= get_the_title(); ?></div>
-				<?php if( $types ): ?>
-					<span class="dash">&mdash;</span>
-					<span class="event-type"><?= $types; ?></span>
-				<?php endif; ?>
-			</div>
-			<div class="col col-12 secondary text">
-				<?php if( sizeof( $partners ) >= 1 ): ?>
-					<div class="partner">
-						<div>Organized by</div>
-						<?php foreach( $partners as $partner ):
-							echo '<span>'.$partner->post_title.'</span>';
-						endforeach; ?>
-					</div>
-				<?php endif; ?>
-			</div>
-		</div>
-	</a>
-</div>
-
 <div data-id="<?= $id; ?>" data-post-type="events" data-time-of-day="<?= $time_of_day_str; ?>" data-event-type="<?= $event_type_str; ?>" data-date="<?= $start_date.( $end_date ? ','.$end_date : '' ); ?>" <?php post_class( $row_classes ); ?>>
 	<a class="item-link" href="<?= $permalink; ?>">
 		<div class="row">
@@ -61,11 +36,11 @@ endif;
 			<div class="col col-12 col-sm-2 time"><?= $time_span; ?></div>
 			<div class="col col-12 col-sm-3 partner">
 				<?php
-					if( sizeof( $partners ) >= 1 ):
-						foreach( $partners as $partner ):
-							echo '<span>'.$partner->post_title.'</span>';
-						endforeach;
-					endif;
+				if( $partners && sizeof( $partners ) >= 1 ):
+					foreach( $partners as $partner ):
+						echo '<span>'.$partner->post_title.'</span>';
+					endforeach;
+				endif;
 				?>
 			</div>
 		</div>

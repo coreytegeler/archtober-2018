@@ -16,30 +16,32 @@ jQuery(document).ready ($) ->
 	listView = itemsLoop.find('.list-view') 
 
 	fillDays = () ->
-		$('.grid-view .day-loop').each (i, gridDayLoop) ->
-			date = $(gridDayLoop).attr('data-date')
-			$.ajax
-				url: ajax_obj.ajaxurl,
-				type: 'POST',
-				dataType: 'html',
-				data:
-					date: date,
-					action: 'get_day_of_events'
-				success: (html) ->
-					if html.length
-						$(gridDayLoop).find('.block.placeholder').remove()
-						blocks = $(html).filter('.event-block')
-						rows = $(html).filter('.event-row')
-						blocks.each (i, block) ->
-							$(gridDayLoop).append(block)
-						$(gridDayLoop).addClass('show')
-						listDayLoop = listView.find('[data-date="'+date+'"]')
-						rows.each (i, row) ->
-							listDayLoop.append(row)
-						if itemsLoop.attr('data-view') == 'list' || isMobile()
-							filterItems()
-				error: (error) ->
-					console.log error
+		filterItems()
+		# $('.grid-view .day-loop').each (i, gridDayLoop) ->
+		# 	date = $(gridDayLoop).attr('data-date')
+		# 	$.ajax
+		# 		url: ajax_obj.ajaxurl,
+		# 		type: 'POST',
+		# 		dataType: 'html',
+		# 		data:
+		# 			date: date,
+		# 			action: 'get_day_of_events'
+		# 		success: (html) ->
+		# 			if html.length
+		# 				$(gridDayLoop).find('.block.placeholder').remove()
+		# 				blocks = $(html).filter('.event-block')
+		# 				rows = $(html).filter('.event-row')
+		# 				blocks.each (i, block) ->
+		# 					$(gridDayLoop).append(block)
+		# 				$(gridDayLoop).addClass('show')
+		# 				listDayLoop = listView.find('[data-date="'+date+'"]')
+		# 				rows.each (i, row) ->
+		# 					listDayLoop.append(row)
+		# 				if itemsLoop.attr('data-view') == 'list' || isMobile()
+		# 					filterItems()
+		# 		error: (jqXHR, textStatus, errorThrown) ->
+		# 			console.log jqXHR, textStatus, errorThrown
+		# 	, 10*i
 			
 	identity.on 'click', () ->
 		top = $(this).innerHeight()
@@ -291,7 +293,7 @@ jQuery(document).ready ($) ->
 		return false
 
 	fixMobileView = () ->
-		if isMobile() && itemsLoop.filter('#events-loop')
+		if isMobile() && itemsLoop.filter('#events-loop').length
 			itemsLoop.attr('data-view','grid')
 			$('.toggle[data-view="grid"]').addClass('active')
 			$('.toggle[data-view="list"]').removeClass('active')
@@ -305,7 +307,7 @@ jQuery(document).ready ($) ->
 		headerBottom = headerHeight
 		topHeight = headerHeight
 
-		$('[data-view="grid"] .date-header, [data-view="list"] .list-header').each () ->
+		$('[data-view="grid"] .fix-header, [data-view="list"] .list-header').each () ->
 			thisHeader = $(this)
 			thisFix = thisHeader.find('.fix')
 			thisTop = thisHeader.offset().top
@@ -327,9 +329,9 @@ jQuery(document).ready ($) ->
 			if $('#identity').length
 				identity.remove()
 				$(window).scrollTop(0)
+			body.addClass('header-fixed')
 			mainInner.css
 				marginTop: topHeight
-			body.addClass('header-fixed')
 		else
 			body.removeClass('header-fixed')
 	.scroll()

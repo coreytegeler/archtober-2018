@@ -1,12 +1,17 @@
-<?php global $post; ?>
+<?php
+global $post;
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25907718-1"></script>
 	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-25907718-1');
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-25907718-1');
 	</script>
 
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -25,16 +30,22 @@ if( is_singular( 'events' ) ):
 endif;
 ?>
 <body <?php body_class( $body_classes ); ?>>
-	<?php $logo_src = get_template_directory_uri() . '/assets/images/logo.svg'; ?>
-	<?php $background = get_field( 'background', 'options' ); ?>
-	<div id="identity" class="row">
-		<div class="logo"><?= file_get_contents( $logo_src ); ?></div>
-		<div class="background" style="background-image:url(<?= $background['url']; ?>)"></div>
-		<div class="instruct">
-			<div class="desktop">click or scroll to enter</div>
-			<div class="mobile">tap or scroll to enter</div>
+	<?php
+	$logo_src = get_template_directory_uri() . '/assets/images/logo.svg';
+	$background = get_field( 'background', 'options' );
+	$et_param = get_query_var( 'event_types' );
+	$ed_param = get_query_var( 'event_date' );
+	if( !$et_param && !$ed_param ):
+	?>
+		<div id="identity" class="row">
+			<div class="logo"><?= file_get_contents( $logo_src ); ?></div>
+			<div class="background" style="background-image:url(<?= $background['url']; ?>)"></div>
+			<div class="instruct">
+				<div class="desktop">click or scroll to enter</div>
+				<div class="mobile">tap or scroll to enter</div>
+			</div>
 		</div>
-	</div>
+	<?php endif; ?>
 
 	<main class="content" role="main">
 		<?php get_template_part( 'head' ); ?>

@@ -1,5 +1,5 @@
 /*
-Theme Name: Archtober 18
+Theme Name: Archtober 2018
 Author: Corey Tegeler
 Author URI: https://coreytegeler.com/
 Version: 2.0
@@ -438,6 +438,8 @@ main {
       margin-top: 90px; }
     body.home main .main-inner, body.archive-events main .main-inner, body.single-events main .main-inner, body.partners main .main-inner {
       padding-top: 0px; }
+    body.exhibitions main .main-inner {
+      padding-top: 45px; }
   @media (max-width: 575px) {
     main {
       padding: 15px 0 0 0; }
@@ -523,18 +525,18 @@ main {
     color: #c0a475; }
   .loop[data-view="grid"] .botd a, .loop[data-view="grid"] .botd a:hover, .loop[data-view="grid"] .botd a:visited {
     color: #c0a475; }
-  .loop[data-view="grid"] .date-header {
+  .loop[data-view="grid"] .fix-header {
     padding: 0; }
-    .loop[data-view="grid"] .date-header .fix {
+    .loop[data-view="grid"] .fix-header .fix {
       width: 100%;
       background: #c0a475;
       z-index: 150;
-      padding: 65px 0 15px 0;
+      padding: 85px 0 15px 0;
       position: relative; }
       @media (max-width: 768px) {
-        .loop[data-view="grid"] .date-header .fix {
+        .loop[data-view="grid"] .fix-header .fix {
           padding-top: 30px; } }
-      .loop[data-view="grid"] .date-header .fix .arrow {
+      .loop[data-view="grid"] .fix-header .fix .arrow {
         position: absolute;
         bottom: 15px;
         width: 24px;
@@ -543,33 +545,29 @@ main {
         background-repeat: no-repeat;
         background-size: contain;
         display: none; }
-        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="prev"] {
+        .loop[data-view="grid"] .fix-header .fix .arrow[data-direction="prev"] {
           left: 15px;
           background-image: url(./assets/images/arrow-left.svg); }
-        .loop[data-view="grid"] .date-header .fix .arrow[data-direction="next"] {
+        .loop[data-view="grid"] .fix-header .fix .arrow[data-direction="next"] {
           right: 15px;
           background-image: url(./assets/images/arrow-right.svg); }
-    .loop[data-view="grid"] .date-header.fixed {
+    .loop[data-view="grid"] .fix-header.fixed {
       padding-bottom: 15px; }
-      .loop[data-view="grid"] .date-header.fixed .fix {
+      .loop[data-view="grid"] .fix-header.fixed .fix {
         position: fixed;
         left: 0;
         z-index: 300;
-        padding: 75px 30px 15px 30px; }
+        padding: 85px 30px 15px 30px; }
         @media (max-width: 575px) {
-          .loop[data-view="grid"] .date-header.fixed .fix .arrow {
+          .loop[data-view="grid"] .fix-header.fixed .fix .arrow {
             display: block; } }
         @media (max-width: 768px) {
-          .loop[data-view="grid"] .date-header.fixed .fix {
+          .loop[data-view="grid"] .fix-header.fixed .fix {
             padding: 30px 15px 15px 15px;
             margin: 0; } }
     @media (max-width: 575px) {
-      .loop[data-view="grid"] .date-header {
+      .loop[data-view="grid"] .fix-header {
         text-align: center !important; } }
-  .loop[data-view="grid"] .institution-header {
-    margin-bottom: 15px; }
-  .loop[data-view="grid"] .institution.row {
-    margin-bottom: 90px; }
   .loop[data-view="grid"].hide-past .day.past {
     display: none; }
   .loop[data-view="list"] {
@@ -587,7 +585,7 @@ main {
           display: none; } }
       .loop[data-view="list"] .list-header .fix {
         width: auto;
-        padding: 60px 15px 0 15px;
+        padding: 70px 15px 0 15px;
         margin: 0 -15px;
         display: -webkit-box;
         display: flex;
@@ -717,7 +715,7 @@ main {
         margin: 0; }
       @media (max-width: 575px) {
         .loop[data-view="list"] .item-link, .loop[data-view="list"] .partner-row {
-          padding: 15px;
+          padding: 15px 30px;
           margin: 0 15px;
           display: block; } }
     .loop[data-view="list"] .item-link:hover {
@@ -788,7 +786,7 @@ main {
   .overlay .piece {
     margin: 0 0 30px 0; }
     .overlay .piece.title {
-      margin-top: 120px; }
+      margin-top: 110px; }
       @media (max-width: 575px) {
         .overlay .piece.title {
           margin-top: 0; } }

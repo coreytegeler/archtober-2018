@@ -44,16 +44,18 @@ $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 
 			<div class="piece institution">
 				<?php
-				foreach( $institutions as $institution ):
-					echo '<span>'.$institution->name.'</span>';
-				endforeach;
+				if( $institutions && sizeof( $institutions ) ):
+					foreach( $institutions as $institution ):
+						echo '<span>'.$institution->name.'</span>';
+					endforeach;
+					echo '<br/>';
+				endif;
+				echo $address;
+				if( $more_info ):
+					echo '<br/>';
+					echo '<a href="'.http( $more_info ).'" target="_blank">More Information</a>';
+				endif;
 				?>
-				<br/>
-				<?= $address ?>
-				<?php if( $more_info ): ?>
-					<br/>
-					<a href="<?= http( $more_info ) ?>" target="_blank">More Information</a>
-				<?php endif; ?>
 			</div>
 
 			<div class="piece content">
@@ -62,7 +64,7 @@ $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 
 		</div>
 
-		<div class="col col-12 col-md-6">
+		<div class="col col-12 col-sm-6 fixed">
 			<?php
 			if( $images ):
 				echo '<div class="gallery">';

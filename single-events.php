@@ -54,7 +54,7 @@ $archive_url = get_permalink( get_page_by_path( 'events' )->ID );
 				<?= $location; ?>
 			</div>
 
-			<?php if( !$is_botd && sizeof( $partners ) > 0 ): ?>
+			<?php if( !$is_botd && $partners && sizeof( $partners ) > 0 ): ?>
 				<div class="piece partner">Organized by
 					<?php foreach( $partners as $partner ):
 						echo '<span>'.$partner->post_title.'</span>';

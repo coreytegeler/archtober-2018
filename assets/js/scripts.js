@@ -16,41 +16,7 @@ jQuery(document).ready(function($) {
   gridView = itemsLoop.find('.grid-view');
   listView = itemsLoop.find('.list-view');
   fillDays = function() {
-    return $('.grid-view .day-loop').each(function(i, gridDayLoop) {
-      var date;
-      date = $(gridDayLoop).attr('data-date');
-      return $.ajax({
-        url: ajax_obj.ajaxurl,
-        type: 'POST',
-        dataType: 'html',
-        data: {
-          date: date,
-          action: 'get_day_of_events'
-        },
-        success: function(html) {
-          var blocks, listDayLoop, rows;
-          if (html.length) {
-            $(gridDayLoop).find('.block.placeholder').remove();
-            blocks = $(html).filter('.event-block');
-            rows = $(html).filter('.event-row');
-            blocks.each(function(i, block) {
-              return $(gridDayLoop).append(block);
-            });
-            $(gridDayLoop).addClass('show');
-            listDayLoop = listView.find('[data-date="' + date + '"]');
-            rows.each(function(i, row) {
-              return listDayLoop.append(row);
-            });
-            if (itemsLoop.attr('data-view') === 'list' || isMobile()) {
-              return filterItems();
-            }
-          }
-        },
-        error: function(error) {
-          return console.log(error);
-        }
-      });
-    });
+    return filterItems();
   };
   identity.on('click', function() {
     var top;
@@ -347,7 +313,7 @@ jQuery(document).ready(function($) {
     return false;
   };
   fixMobileView = function() {
-    if (isMobile() && itemsLoop.filter('#events-loop')) {
+    if (isMobile() && itemsLoop.filter('#events-loop').length) {
       itemsLoop.attr('data-view', 'grid');
       $('.toggle[data-view="grid"]').addClass('active');
       return $('.toggle[data-view="list"]').removeClass('active');
@@ -361,7 +327,7 @@ jQuery(document).ready(function($) {
     headerHeight = header.innerHeight();
     headerBottom = headerHeight;
     topHeight = headerHeight;
-    $('[data-view="grid"] .date-header, [data-view="list"] .list-header').each(function() {
+    $('[data-view="grid"] .fix-header, [data-view="list"] .list-header').each(function() {
       var fixHeight, thisFix, thisHeader, thisTop;
       thisHeader = $(this);
       thisFix = thisHeader.find('.fix');
@@ -388,10 +354,10 @@ jQuery(document).ready(function($) {
         identity.remove();
         $(window).scrollTop(0);
       }
-      mainInner.css({
+      body.addClass('header-fixed');
+      return mainInner.css({
         marginTop: topHeight
       });
-      return body.addClass('header-fixed');
     } else {
       return body.removeClass('header-fixed');
     }
