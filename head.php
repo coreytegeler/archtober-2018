@@ -1,6 +1,6 @@
 <div class="nav-icon icon-btn burger" onclick="void(0)"></div>
 <div class="nav-icon icon-btn x" onclick="void(0)"></div>
-<nav>
+<nav class="open">
 	<div class="row top">
 		<div class="col col-12">
 			<ul class="nav-menu">
@@ -40,7 +40,17 @@
 		<div class="col col-12 col-sm-6">
 			<div class="footer">
 				<a href="<?= get_field( 'privacy_policy', 'options' ) ?>" class="pp" target="_blank">Privacy Policy</a>
-				<!-- <a href="<?#= get_field( '', 'options' ) ?>" class="subscribe">Subscribe to Email</a> -->
+				<a href="#" class="subscribe">Subscribe to Email</a>
+				<div id="subscribe">
+					<form action="<?= get_field( 'subscribe', 'options' ) ?>" method="post">
+						<input type="text" value="archtober" style="display:none;" disabled>
+						<input type="text" name="first_name" placeholder="First Name" required>
+						<input type="text" name="last_name" placeholder="Last Name" required>
+						<input type="text" name="email" placeholder="Email" required>
+						<input type="submit" value="Submit"/>
+						<div class="message">You did not supply an email address.</div>
+					</form>
+				</div>
 				<a href="<?= get_field( 'donate', 'options' ) ?>" class="donate" target="_blank">Donate</a>
 			</div>
 		</div>
@@ -106,7 +116,11 @@
 			<?php elseif( is_singular( 'partners' ) || $post->post_name == 'partners' || $post->post_type == 'partners' ): ?>
 				<div class="toggles">
 					<?php
-					$media_id = get_term_by( 'slug', 'media', 'partner_type' )->term_id;
+					if( $media_term = get_term_by( 'slug', 'media', 'partner_type' ) ):
+						$media_id = $media_term->term_id;
+					else:
+						$media_id = null;
+					endif;
 					$partner_types = get_terms( array(
 						'orderby' => 'term_order',
 						'taxonomy' => 'partner_type',

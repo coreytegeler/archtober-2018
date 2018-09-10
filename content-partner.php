@@ -9,9 +9,11 @@ $row_classes = array( 'item-row', 'partner-row', 'item', 'partner', 'col', 'col-
 	<div class="row">
 		<div class="col col-12 col-sm-4 name"><?= get_the_title(); ?></div>
 		<div class="col col-12 col-sm-4 website">
-			<a href="<?= $website ?>" target="_blank">
-				<?= pretty_url( $website ); ?>
-			</a>
+			<?php if( $website ): ?>
+				<a href="<?= $website ?>" target="_blank">
+					<?= pretty_url( $website ); ?>
+				</a>
+			<?php endif; ?>
 		</div>
 		<div class="col col-12 col-sm-4 date"><?= get_field( 'phone' ); ?></div>
 	</div>

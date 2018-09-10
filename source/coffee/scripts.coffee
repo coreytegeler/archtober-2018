@@ -14,34 +14,42 @@ jQuery(document).ready ($) ->
 	itemRows = $('.item-row')
 	gridView = itemsLoop.find('.grid-view') 
 	listView = itemsLoop.find('.list-view') 
+	eventsPool = $('#events-pool')
 
-	fillDays = () ->
-		filterItems()
-		# $('.grid-view .day-loop').each (i, gridDayLoop) ->
-		# 	date = $(gridDayLoop).attr('data-date')
-		# 	$.ajax
-		# 		url: ajax_obj.ajaxurl,
-		# 		type: 'POST',
-		# 		dataType: 'html',
-		# 		data:
-		# 			date: date,
-		# 			action: 'get_day_of_events'
-		# 		success: (html) ->
-		# 			if html.length
-		# 				$(gridDayLoop).find('.block.placeholder').remove()
-		# 				blocks = $(html).filter('.event-block')
-		# 				rows = $(html).filter('.event-row')
-		# 				blocks.each (i, block) ->
-		# 					$(gridDayLoop).append(block)
-		# 				$(gridDayLoop).addClass('show')
-		# 				listDayLoop = listView.find('[data-date="'+date+'"]')
-		# 				rows.each (i, row) ->
-		# 					listDayLoop.append(row)
-		# 				if itemsLoop.attr('data-view') == 'list' || isMobile()
-		# 					filterItems()
-		# 		error: (jqXHR, textStatus, errorThrown) ->
-		# 			console.log jqXHR, textStatus, errorThrown
-		# 	, 10*i
+	getEventsBlocks = () ->
+		$.ajax
+			url: ajax_obj.ajaxurl,
+			type: 'POST',
+			dataType: 'html',
+			data:
+				action: 'get_events_blocks'
+			success: (html) ->
+				fillEventsBlocks($(html).filter('.event'))
+			error: (jqXHR, textStatus, errorThrown) ->
+				console.log jqXHR, textStatus, errorThrown
+		
+	fillEventsBlocks = (blocks) ->
+		blocks.each (i, block) ->
+			block = $(block)
+			days = $(block).attr('data-days').split(',')
+			for day in days
+				if day != 1 && day != '1'
+					dayLoop = $('.day-loop[data-day="'+day+'"]')
+					dayLoop.addClass('show')
+					dayLoop.append(block.clone())
+
+	fillEventsRows = () ->
+		$.ajax
+			url: ajax_obj.ajaxurl,
+			type: 'POST',
+			dataType: 'html',
+			data:
+				action: 'get_events_rows'
+			success: (html) ->
+				listView.append(html)
+				filterItems()
+			error: (jqXHR, textStatus, errorThrown) ->
+				console.log jqXHR, textStatus, errorThrown
 			
 	identity.on 'click', () ->
 		top = $(this).innerHeight()
@@ -49,6 +57,7 @@ jQuery(document).ready ($) ->
 			scrollTop: top+'px'
 		, 200, () ->
 			identity.remove()
+			$(window).scrollTop(0)
 
 
 	body.on 'click', '.nav-icon.burger', () ->
@@ -165,6 +174,8 @@ jQuery(document).ready ($) ->
 		id = item.attr('data-id')
 		if !id
 			return
+		if item.is('.no-gallery')
+			overlayPlaceholder.addClass('no-gallery')
 		overlayPlaceholder.find('.x').attr('href', location.href)
 		if item.is('.event_type-botd')
 			overlayPlaceholder.addClass('botd')
@@ -202,6 +213,7 @@ jQuery(document).ready ($) ->
 			closeOverlay()
 
 	openOverlay = (id, postType) ->
+		# block = $('.block[data-id="'+id+'"]')
 		$.ajax
 			url: ajax_obj.ajaxurl,
 			type: 'POST',
@@ -214,7 +226,9 @@ jQuery(document).ready ($) ->
 				body.addClass('overlay-open')
 				main.prepend(html)
 				setupGallery()
-				overlayPlaceholder.removeClass('show')
+				setTimeout () ->
+					main.find('.overlay:not(.placeholder)').addClass('show')
+				, 200
 				header.removeClass('open')
 			error: (error) ->
 				console.log error
@@ -225,9 +239,13 @@ jQuery(document).ready ($) ->
 		overlay = $('.overlay[data-id]')
 		id = overlay.attr('data-id')
 		item = $('.item').filter('[data-id="'+id+'"]')
+		overlayPlaceholder.removeClass('no-gallery')
 		if !item.length
-			overlay.remove()
+			overlay.removeClass('show')
 			overlayPlaceholder.removeClass('show')
+			setTimeout () ->
+				overlay.remove()
+			, 200
 			return
 		parent = item.parents('.loop')
 		offset = header.innerHeight()
@@ -237,8 +255,14 @@ jQuery(document).ready ($) ->
 			target = item.filter('.item-row')
 			offset += $('.list-header .fix').innerHeight()
 		scrollTop = target.offset().top - offset
+		overlayPlaceholder.removeClass('show')
 		$(window).scrollTop(scrollTop)
-		overlay.remove()
+		setTimeout () ->
+			overlay.removeClass('show')
+			setTimeout () ->
+				overlay.remove()
+			, 200
+		, 200
 
 
 	body.on 'click', '.gallery .dot', (e) ->
@@ -277,6 +301,53 @@ jQuery(document).ready ($) ->
 	$(window).resize () ->
 		$(window).scroll()
 	.resize()
+
+	$('a.subscribe').click (e) ->
+		e.preventDefault()
+		$('#subscribe').toggleClass('show')
+
+	$('body').on 'click', (e) ->
+		if $(e.target).is('a.subscribe')
+			return
+		if e.target.id == 'subscribe'
+			return
+		if $(e.target).parents('#subscribe').length
+			return
+		$('#subscribe').removeClass('show')
+
+
+	$('#subscribe form').submit (e) ->
+		e.preventDefault()
+		form = $(this)
+		message = form.find('.message')
+		data = $(this).serializeObject()
+		form.removeClass('error success')
+		message.html('')
+		$.ajax
+			url: this.action
+			method: this.method
+			dataType: 'json'
+			data: data
+			error: (jqXHR, textStatus, errorThrown) ->
+				console.log jqXHR, textStatus, errorThrown
+			success: (data, textStatus, jqXHR) ->
+				form.addClass(data.status)
+				if data.result
+					message.html(data.result)
+					
+
+			
+	$.fn.serializeObject = () ->
+		o = {}
+		a = this.serializeArray()
+		$.each a, () ->
+			if(o[this.name])
+				if (!o[this.name].push)
+					 o[this.name] = [o[this.name]]
+				o[this.name].push(this.value || '')
+			else
+				o[this.name] = this.value || ''
+		return o
 
 
 	checkIdentity = () ->
@@ -339,4 +410,6 @@ jQuery(document).ready ($) ->
 	fixMobileView()
 
 	setupGallery()
-	fillDays()
+	if itemsLoop.is('#events-loop')
+		fillEventsRows()
+		getEventsBlocks() 

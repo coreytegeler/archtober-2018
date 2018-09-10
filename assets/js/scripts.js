@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-  var alert, body, burger, checkIdentity, closeOverlay, fillDays, filterItems, fixMobileView, gridView, header, headerPlaceholder, identity, intro, isMobile, itemRows, itemsLoop, listView, main, mainInner, nav, openOverlay, overlayPlaceholder, setupGallery;
+  var alert, body, burger, checkIdentity, closeOverlay, eventsPool, fillEventsBlocks, fillEventsRows, filterItems, fixMobileView, getEventsBlocks, gridView, header, headerPlaceholder, identity, intro, isMobile, itemRows, itemsLoop, listView, main, mainInner, nav, openOverlay, overlayPlaceholder, setupGallery;
   body = $('body');
   nav = $('nav');
   header = $('header');
@@ -15,8 +15,58 @@ jQuery(document).ready(function($) {
   itemRows = $('.item-row');
   gridView = itemsLoop.find('.grid-view');
   listView = itemsLoop.find('.list-view');
-  fillDays = function() {
-    return filterItems();
+  eventsPool = $('#events-pool');
+  getEventsBlocks = function() {
+    return $.ajax({
+      url: ajax_obj.ajaxurl,
+      type: 'POST',
+      dataType: 'html',
+      data: {
+        action: 'get_events_blocks'
+      },
+      success: function(html) {
+        return fillEventsBlocks($(html).filter('.event'));
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        return console.log(jqXHR, textStatus, errorThrown);
+      }
+    });
+  };
+  fillEventsBlocks = function(blocks) {
+    return blocks.each(function(i, block) {
+      var day, dayLoop, days, j, len, results;
+      block = $(block);
+      days = $(block).attr('data-days').split(',');
+      results = [];
+      for (j = 0, len = days.length; j < len; j++) {
+        day = days[j];
+        if (day !== 1 && day !== '1') {
+          dayLoop = $('.day-loop[data-day="' + day + '"]');
+          dayLoop.addClass('show');
+          results.push(dayLoop.append(block.clone()));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    });
+  };
+  fillEventsRows = function() {
+    return $.ajax({
+      url: ajax_obj.ajaxurl,
+      type: 'POST',
+      dataType: 'html',
+      data: {
+        action: 'get_events_rows'
+      },
+      success: function(html) {
+        listView.append(html);
+        return filterItems();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        return console.log(jqXHR, textStatus, errorThrown);
+      }
+    });
   };
   identity.on('click', function() {
     var top;
@@ -24,7 +74,8 @@ jQuery(document).ready(function($) {
     return $('html, body').animate({
       scrollTop: top + 'px'
     }, 200, function() {
-      return identity.remove();
+      identity.remove();
+      return $(window).scrollTop(0);
     });
   });
   body.on('click', '.nav-icon.burger', function() {
@@ -167,6 +218,9 @@ jQuery(document).ready(function($) {
     if (!id) {
       return;
     }
+    if (item.is('.no-gallery')) {
+      overlayPlaceholder.addClass('no-gallery');
+    }
     overlayPlaceholder.find('.x').attr('href', location.href);
     if (item.is('.event_type-botd')) {
       overlayPlaceholder.addClass('botd');
@@ -223,7 +277,9 @@ jQuery(document).ready(function($) {
         body.addClass('overlay-open');
         main.prepend(html);
         setupGallery();
-        overlayPlaceholder.removeClass('show');
+        setTimeout(function() {
+          return main.find('.overlay:not(.placeholder)').addClass('show');
+        }, 200);
         return header.removeClass('open');
       },
       error: function(error) {
@@ -238,9 +294,13 @@ jQuery(document).ready(function($) {
     overlay = $('.overlay[data-id]');
     id = overlay.attr('data-id');
     item = $('.item').filter('[data-id="' + id + '"]');
+    overlayPlaceholder.removeClass('no-gallery');
     if (!item.length) {
-      overlay.remove();
+      overlay.removeClass('show');
       overlayPlaceholder.removeClass('show');
+      setTimeout(function() {
+        return overlay.remove();
+      }, 200);
       return;
     }
     parent = item.parents('.loop');
@@ -252,8 +312,14 @@ jQuery(document).ready(function($) {
       offset += $('.list-header .fix').innerHeight();
     }
     scrollTop = target.offset().top - offset;
+    overlayPlaceholder.removeClass('show');
     $(window).scrollTop(scrollTop);
-    return overlay.remove();
+    return setTimeout(function() {
+      overlay.removeClass('show');
+      return setTimeout(function() {
+        return overlay.remove();
+      }, 200);
+    }, 200);
   };
   body.on('click', '.gallery .dot', function(e) {
     var caption, dot, figure, gallery, index;
@@ -296,6 +362,62 @@ jQuery(document).ready(function($) {
   $(window).resize(function() {
     return $(window).scroll();
   }).resize();
+  $('a.subscribe').click(function(e) {
+    e.preventDefault();
+    return $('#subscribe').toggleClass('show');
+  });
+  $('body').on('click', function(e) {
+    if ($(e.target).is('a.subscribe')) {
+      return;
+    }
+    if (e.target.id === 'subscribe') {
+      return;
+    }
+    if ($(e.target).parents('#subscribe').length) {
+      return;
+    }
+    return $('#subscribe').removeClass('show');
+  });
+  $('#subscribe form').submit(function(e) {
+    var data, form, message;
+    e.preventDefault();
+    form = $(this);
+    message = form.find('.message');
+    data = $(this).serializeObject();
+    form.removeClass('error success');
+    message.html('');
+    return $.ajax({
+      url: this.action,
+      method: this.method,
+      dataType: 'json',
+      data: data,
+      error: function(jqXHR, textStatus, errorThrown) {
+        return console.log(jqXHR, textStatus, errorThrown);
+      },
+      success: function(data, textStatus, jqXHR) {
+        form.addClass(data.status);
+        if (data.result) {
+          return message.html(data.result);
+        }
+      }
+    });
+  });
+  $.fn.serializeObject = function() {
+    var a, o;
+    o = {};
+    a = this.serializeArray();
+    $.each(a, function() {
+      if (o[this.name]) {
+        if (!o[this.name].push) {
+          o[this.name] = [o[this.name]];
+        }
+        return o[this.name].push(this.value || '');
+      } else {
+        return o[this.name] = this.value || '';
+      }
+    });
+    return o;
+  };
   checkIdentity = function() {
     if (sessionStorage.getItem('hide-identity')) {
       identity.remove();
@@ -364,5 +486,8 @@ jQuery(document).ready(function($) {
   }).scroll();
   fixMobileView();
   setupGallery();
-  return fillDays();
+  if (itemsLoop.is('#events-loop')) {
+    fillEventsRows();
+    return getEventsBlocks();
+  }
 });

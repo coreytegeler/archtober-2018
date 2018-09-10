@@ -24,7 +24,15 @@ global $post;
 	<title><?php bloginfo( 'name' ); ?></title>
 </head>
 <?php
-$body_classes = array( $post->post_type, $post->post_name );
+$body_classes = array();
+if( $post ):
+	if( $post->post_type ):
+		array_push( $body_classes, $post->post_type );
+	endif;
+	if( $post->post_name ):
+		array_push( $body_classes, $post->post_name );
+	endif;
+endif;
 if( is_singular( 'events' ) ):
 	array_push( $body_classes, 'overlay-open' );
 endif;
@@ -33,13 +41,19 @@ endif;
 	<?php
 	$logo_src = get_template_directory_uri() . '/assets/images/logo.svg';
 	$background = get_field( 'background', 'options' );
+	$background_mobile = get_field( 'background_mobile', 'options' );
 	$et_param = get_query_var( 'event_types' );
 	$ed_param = get_query_var( 'event_date' );
 	if( !$et_param && !$ed_param ):
 	?>
 		<div id="identity" class="row">
 			<div class="logo"><?= file_get_contents( $logo_src ); ?></div>
-			<div class="background" style="background-image:url(<?= $background['url']; ?>)"></div>
+			<?php if( $background_mobile ): ?>
+				<div class="background desktop" style="background-image:url(<?= $background['url']; ?>)"></div>
+				<div class="background mobile" style="background-image:url(<?= $background_mobile['url']; ?>)"></div>
+			<?php else: ?>
+				<div class="background" style="background-image:url(<?= $background['url']; ?>)"></div>
+			<?php endif; ?>
 			<div class="instruct">
 				<div class="desktop">click or scroll to enter</div>
 				<div class="mobile">tap or scroll to enter</div>

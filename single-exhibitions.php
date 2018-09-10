@@ -12,6 +12,9 @@ $institutions = wp_get_post_terms( $id, 'institution' );
 $address = get_field( 'address' );
 $more_info = get_field( 'more_info' );
 $post_classes = array( 'exhibition-overlay', 'overlay' );
+if( !wp_doing_ajax() ) {
+	array_push( $post_classes, 'show' );
+}
 $archive_url = get_permalink( get_page_by_path( 'exhibitions' )->ID );
 ?>
 <article data-id="<?= $id; ?>" <?php post_class( $post_classes ); ?>>

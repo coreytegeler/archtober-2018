@@ -11,6 +11,7 @@ echo '<div id="intro">';
 	echo '<div class="lg"></div>';
 echo '</div>';
 ?>
+
 <div id="events-loop" class="loop events-loop" data-view="<?= $et_param || $ed_param ? 'list' : 'grid'; ?>">
 	<div class="grid-view">
 		<?php	
@@ -21,66 +22,106 @@ echo '</div>';
 			$date_format = date_format( $date, 'l, M j' );
 			$past = ( date_format( $date, 'm/j/y' ) < $today ? ' past' : '' );
 
-			echo '<div class="row day day-loop'.$past.'" data-date="'.$date_str.'">';
+			echo '<div class="row day day-loop'.$past.'" data-date="'.$date_str.'" data-day="'.$day_int.'">';
 				echo '<div class="col col-12">';
 					echo '<div class="fix-header date-header">';
 						echo '<div class="fix">';
 							if( $day_int != 1 ):
-								echo '<div class="arrow" data-direction="prev"></div>';
+								echo '<div class="arrow" data-direction="prev" onclick="void(0)"></div>';
 							endif;
 								echo $date_format;
 							if( $day_int != 31 ):
-								echo '<div class="arrow" data-direction="next"></div>';
+								echo '<div class="arrow" data-direction="next" onclick="void(0)"></div>';
 							endif;
 						echo '</div>';
 					echo '</div>';
 				echo '</div>';
 
-				// echo '<div class="event-block botd block event placeholder col-12 col-sm-12 col-md-8 col-lg-6"><div class="item-link"></div></div>';
-				// echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
-				// echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
-				// echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
-
-				$events_block_query = new WP_Query( array(
+				$botd_query = new WP_Query( array(
 					'post_type' => 'events',
-					'posts_per_page' => -1,
+					'posts_per_page' => 1,
 					'order' => 'ASC',
-					'orderby' => 'meta_value_num',
-					'meta_key' => 'times_0_start_time',
+					'orderby' => 'meta_value',
+					'meta_key' => 'date',
 					'meta_query' => array (
-						'relation' => 'OR',
+						'key' => 'date',
+						'value' => $date_str,
+						'compare' => '=',
+						'type' => 'DATE'
+					),
+					'tax_query' => array(
 						array(
-							'key' => 'date',
-							'value' => $date_str,
-							'compare' => '=',
-							'type' => 'DATE'
-						),
-						array(
-							'relation' => 'AND',
-							array(
-								'key' => 'date',
-								'value' => $date_str,
-								'compare' => '<=',
-								'type' => 'DATE'
-							),
-							array(
-								'key' => 'end_date',
-								'compare' => '>=',
-								'value' => $date_str,
-								'type' => 'DATE',
-							)
+							'taxonomy' => 'event_type',
+							'field' => 'slug',
+							'terms' => 'botd',
+							'operator' => 'IN'
 						)
 					)
 				) );
 
-				if( $events_block_query->have_posts() ):
-					while( $events_block_query->have_posts() ):
-						$events_block_query->the_post();
-						if( !has_term( 'botd', 'event_type' ) ):
-							get_template_part( 'content', 'event-block' );
-						endif;
+				if( $botd_query->have_posts() ):
+					while( $botd_query->have_posts() ):
+						$botd_query->the_post();
+						get_template_part( 'content', 'botd' );
 					endwhile;
 					wp_reset_postdata();
+				endif;
+
+				if( $day_int == 1 ):
+
+					$events_block_query = new WP_Query( array(
+						'post_type' => 'events',
+						'posts_per_page' => -1,
+						'order' => 'ASC',
+						'orderby' => 'meta_value_num',
+						'meta_key' => 'times_0_start_time',
+						'orderby' => array(
+							'date' => 'asc',
+							'times_0_start_time' => 'asc'
+						),
+						'meta_query' => array (
+							'relation' => 'OR',
+							array(
+								'key' => 'date',
+								'value' => $date_str,
+								'compare' => '=',
+								'type' => 'DATE'
+							),
+							array(
+								'relation' => 'AND',
+								array(
+									'key' => 'date',
+									'value' => $date_str,
+									'compare' => '<=',
+									'type' => 'DATE'
+								),
+								array(
+									'key' => 'end_date',
+									'compare' => '>=',
+									'value' => $date_str,
+									'type' => 'DATE',
+								)
+							)
+						)
+					) );
+
+					if( $events_block_query->have_posts() ):
+						while( $events_block_query->have_posts() ):
+							$events_block_query->the_post();
+							if( !has_term( 'botd', 'event_type' ) ):
+								get_template_part( 'content', 'event-block' );
+							endif;
+						endwhile;
+						wp_reset_postdata();
+					endif;
+
+					
+
+				else:
+					// echo '<div class="event-block botd block event placeholder col-12 col-sm-12 col-md-8 col-lg-6"><div class="item-link"></div></div>';
+					echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
+					echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
+					echo '<div class="event-block block event placeholder col col-12 col-sm-6 col-md-4 col-lg-3"><div class="item-link"></div></div>';
 				endif;
 
 				$day_int++;
@@ -176,63 +217,6 @@ echo '</div>';
 				</div>
 			</div>
 		</div>
-		<?php
-		$day_int = 1;
-		// while( $day_int <= 31 ):
-		// $date_str = '2018-10-'.$day_int;
-		// $date = date_create( $date_str );
-		// $date_format = date_format( $date, 'l, M j' );
-		// $past = ( date_format( $date, 'm/j/y' ) < $today ? ' past' : '' );
-		echo '<div class="row day-loop '.$past.'" data-date="'.$date_str.'">';
-
-			$events_row_query = new WP_Query( array(
-				'post_type' => 'events',
-				'posts_per_page' => -1,
-				'order' => 'ASC',
-				'orderby' => 'meta_value_num',
-				'meta_key' => 'date',
-				// 'meta_query' => array (
-				// 	'relation' => 'OR',
-				// 	array(
-				// 		'key' => 'date',
-				// 		'value' => $date_str,
-				// 		'compare' => '=',
-				// 		'type' => 'DATE'
-				// 	),
-				// 	array(
-				// 		'relation' => 'AND',
-				// 		array(
-				// 			'key' => 'date',
-				// 			'value' => $date_str,
-				// 			'compare' => '<=',
-				// 			'type' => 'DATE'
-				// 		),
-				// 		array(
-				// 			'key' => 'end_date',
-				// 			'compare' => '>=',
-				// 			'value' => $date_str,
-				// 			'type' => 'DATE',
-				// 		)
-				// 	)
-				// )
-			) );
-
-
-
-			if( $events_row_query->have_posts() ):
-				while( $events_row_query->have_posts() ):
-					$events_row_query->the_post();
-					if( !has_term( 'botd', 'event_type' ) ):
-						get_template_part( 'content', 'event-row' );
-					endif;
-				endwhile;
-				wp_reset_postdata();
-			endif;
-
-		echo '</div>';
-		// $day_int++;
-		// endwhile;
-		?>
 	</div>
 </div>
 <article class="event-overlay overlay placeholder">
@@ -244,3 +228,4 @@ echo '</div>';
 	</div>
 </article>
 
+<div id="events-pool"></div>

@@ -1,7 +1,7 @@
 <?php
 function archtober_scripts() {
-	$ver = '2.2';
-	wp_enqueue_style( 'style', get_stylesheet_uri() );
+	$ver = '2.9.1';
+	wp_enqueue_style( 'style', get_stylesheet_uri(), null, $ver );
 	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/assets/js/jquery-3.3.1.min.js', array(), true );
 	wp_enqueue_script( 'imagesLoaded', get_template_directory_uri() . '/assets/js/imagesloaded.pkgd.min.js', array(), true );
 	wp_enqueue_script( 'scripts', get_template_directory_uri() . '/assets/js/scripts.js', array(), $ver, true );
@@ -30,6 +30,22 @@ add_action( 'wp_ajax_get_day_of_events', 'get_day_of_events' );
 function get_day_of_events() {
 	$date_str = $_POST['date'];
 	include( locate_template( 'loop-day.php' ) );
+	die();
+}
+
+add_action( 'wp_ajax_nopriv_get_events_blocks', 'get_events_blocks' );
+add_action( 'wp_ajax_get_events_blocks', 'get_events_blocks' );
+
+function get_events_blocks() {
+	get_template_part( 'loop', 'events-blocks' );
+	die();
+}
+
+add_action( 'wp_ajax_nopriv_get_events_rows', 'get_events_rows' );
+add_action( 'wp_ajax_get_events_rows', 'get_events_rows' );
+
+function get_events_rows() {
+	get_template_part( 'loop', 'events-rows' );
 	die();
 }
 

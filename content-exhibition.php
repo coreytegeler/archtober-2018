@@ -4,12 +4,15 @@ $start_date = get_field( 'start_date' );
 $end_date = get_field( 'end_date' );
 $institution = get_terms_str( $id, 'institution' );
 $permalink = get_the_permalink();
-$has_thumb = has_post_thumbnail( get_the_ID() );
+$has_thumb = has_post_thumbnail( $id );
 $block_classes = array( 'exhibition-block', 'block',  'exhibition', 'item', 'col', 'col-12', 'event' );
 if( $has_thumb ):
 	array_push( $block_classes, 'col-sm-12', 'col-md-8', 'col-lg-6' );
 else:
 	array_push( $block_classes, 'col-sm-6', 'col-md-4', 'col-lg-3' );
+endif;
+if( !get_field( 'images' ) ):
+	array_push( $row_classes, 'no-gallery' );
 endif;
 ?>
 <div data-id="<?= $id; ?>" data-post-type="exhibitions" <?php post_class( $block_classes ); ?>>

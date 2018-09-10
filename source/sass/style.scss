@@ -96,6 +96,10 @@ p {
     top: 60px;
 		display: flex;
 		z-index: 150;
+		@include sm {
+			height: calc(100% - 60px);
+			top: 0;
+		}
 		svg {
 			width: auto;
 			height: 90%;
@@ -126,7 +130,7 @@ p {
 		background-position: center calc(100% - 10px);
 		background-size: auto 15px;
 		@include sm {
-			bottom: 60px;
+			bottom: 90px;
 		}
 	}
 }
@@ -425,9 +429,56 @@ header {
 		}
 	}
 }
+#subscribe {
+	display: table;
+  float: right;
+  clear: both;
+  display: none;
+  &.show {
+  	display: block;
+  }
+	form {
+		width: 15em;
+		position: absolute;
+		right: 0;
+		margin-top: -2px;
+		border: 2px solid $white;
+		padding: 15px;
+		background-color: $orange;
+		input {
+			width: 100%;
+			background: transparent !important;
+			font-size: inherit;
+			font-family: inherit;
+			text-align: left;
+			border: none;
+			appearance: none;
+			color: $white;
+			&[type="text"] {
+				margin-bottom: 15px;
+			}
+			&[type="submit"] {
+				padding: 0;
+				cursor: pointer;
+			}
+			&::placeholder {
+				color: rgba($white, 0.5);
+			}
+		}
+		.message {
+			width: 100%;
+			margin-top: 15px;
+			@include xs-text;
+			display: none;
+		}
+		&.error, &.success {
+			display: block;
+		}
+	}
+}
 #intro {
 	width: 100%;
-	padding: 75px 0 0 0;
+	padding: 80px 0 10px 0;
 	@include lg-text;
 	overflow: hidden;
 	p:last-of-type {
@@ -468,17 +519,30 @@ main {
 		}
 	}
 }
+#events-pool {
+	display: none;
+}
 .loop {
 	min-height: 100vh;
-	margin: 15px 0 0 0;
+	margin: 0;
 	.item {
 		&.hide {
 			display: none !important;
 		}
 	}
 	&[data-view="grid"] {
+		&.events-loop {
+			margin-top: 15px;
+		}
 		.list-view {
 			display: none;
+		}
+		.day-loop {
+			&.show {
+				.placeholder {
+					display: none;
+				}
+			}
 		}
 		.block {
 			margin-top: 5px;
@@ -629,7 +693,7 @@ main {
 		}
 	}
 	&[data-view="list"] {
-		margin-top: 0;
+		// margin-top: 0;
 		.list-view {
 			margin-left: -30px;
 	    margin-right: -30px;
@@ -803,9 +867,6 @@ main {
 			width: 100%;
 			padding: 30px;
 			display: table;
-			.row {
-				margin: 0;	
-			}
 			@include sm {
 				padding: 15px 30px;
 				margin: 0 15px;
@@ -829,10 +890,10 @@ main {
 		}
 	}
 	&.exhibitions-loop {
-		margin-top: 0;
+		// margin-top: 0;
 	}
 	&.sponsors-loop {
-		margin-top: 0;
+		// margin-top: 0;
 		.main-sponsor:not(:last-of-type) {
 			margin-bottom: 90px;
 		}
@@ -878,6 +939,13 @@ main {
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
 	color: $white;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 200ms ease-in-out;
+	&.show {
+		opacity: 1;
+		pointer-events: all;
+	}
 	&.event-overlay {
 		background: $green;
 	}
@@ -907,6 +975,7 @@ main {
 	    margin-top: 110px;
 	    @include sm {
 	    	margin-top: 0;
+	    	padding-right: 30px;
 	    }
 		}
 		span:not(:last-of-type)::after {
@@ -926,14 +995,11 @@ main {
 		}
 	}
 	&.placeholder {
-		opacity: 0;
-		pointer-events: none;
-		z-index: -500;
-		transition: opacity 200ms ease-in-out;
-		&.show {
-			opacity: 1;
-			pointer-events: all;
-			z-index: 500;
+		z-index: 699;
+		&.no-gallery {
+			.gallery {
+				display: none;
+			}
 		}
 	}
 }

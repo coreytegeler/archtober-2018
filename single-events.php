@@ -18,12 +18,15 @@ $post_classes = array( 'event-overlay', 'overlay' );
 if( $is_botd ):
 	array_push( $post_classes, 'botd' );
 endif;
+if( !wp_doing_ajax() ) {
+	array_push( $post_classes, 'show' );
+}
 $archive_url = get_permalink( get_page_by_path( 'events' )->ID );
 ?>
 <article data-id="<?= $id; ?>" <?php post_class( $post_classes ); ?>>
 	<a href="<?= $archive_url; ?>" class="icon-btn x" onclick="void(0)"></a>
 	<div class="row overlay-inner">
-		<div class="col col-12 col-sm-6">
+		<div class="col col-12">
 			<div class="piece event-type desktop">
 				<?php
 				if( $is_botd ):
@@ -35,7 +38,8 @@ $archive_url = get_permalink( get_page_by_path( 'events' )->ID );
 				endif;
 				?>
 			</div>
-
+		</div>
+		<div class="col col-12 col-sm-6">
 			<div class="piece title">
 				<h1><?= get_the_title(); ?></h1>
 			</div>
