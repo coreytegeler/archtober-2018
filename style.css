@@ -421,7 +421,7 @@ header {
   #subscribe form {
     width: 15em;
     position: absolute;
-    right: 0;
+    right: 15px;
     margin-top: -2px;
     border: 2px solid white;
     padding: 15px;
@@ -437,7 +437,7 @@ header {
          -moz-appearance: none;
               appearance: none;
       color: white; }
-      #subscribe form input[type="text"] {
+      #subscribe form input[type="text"], #subscribe form input[type="email"] {
         margin-bottom: 15px; }
       #subscribe form input[type="submit"] {
         padding: 0;
@@ -456,7 +456,10 @@ header {
       font-size: 12px;
       line-height: 15px;
       display: none; }
-    #subscribe form.error, #subscribe form.success {
+      #subscribe form .message a {
+        text-align: left;
+        float: none; }
+    #subscribe form.error .message, #subscribe form.success .message {
       display: block; }
 
 #intro {

@@ -1,6 +1,6 @@
 <div class="nav-icon icon-btn burger" onclick="void(0)"></div>
 <div class="nav-icon icon-btn x" onclick="void(0)"></div>
-<nav class="open">
+<nav>
 	<div class="row top">
 		<div class="col col-12">
 			<ul class="nav-menu">
@@ -40,17 +40,19 @@
 		<div class="col col-12 col-sm-6">
 			<div class="footer">
 				<a href="<?= get_field( 'privacy_policy', 'options' ) ?>" class="pp" target="_blank">Privacy Policy</a>
-				<a href="#" class="subscribe">Subscribe to Email</a>
-				<div id="subscribe">
-					<form action="<?= get_field( 'subscribe', 'options' ) ?>" method="post">
-						<input type="text" value="archtober" style="display:none;" disabled>
-						<input type="text" name="first_name" placeholder="First Name" required>
-						<input type="text" name="last_name" placeholder="Last Name" required>
-						<input type="text" name="email" placeholder="Email" required>
-						<input type="submit" value="Submit"/>
-						<div class="message">You did not supply an email address.</div>
-					</form>
-				</div>
+				<?php if( $subscribe = get_field( 'subscribe', 'options' ) ) { ?>
+					<a href="#" class="subscribe">Subscribe to Email</a>
+					<div id="subscribe">
+						<form action="<?= $subscribe ?>" method="POST">
+							<input type="text" name="list" value="archtober" style="display:none;" disabled>
+							<input type="text" name="first_name" placeholder="First Name">
+							<input type="text" name="last_name" placeholder="Last Name">
+							<input type="email" name="email" placeholder="Email">
+							<input type="submit" value="Submit"/>
+							<div class="message">You did not supply an email address.</div>
+						</form>
+					</div>
+				<?php } ?>
 				<a href="<?= get_field( 'donate', 'options' ) ?>" class="donate" target="_blank">Donate</a>
 			</div>
 		</div>

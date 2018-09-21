@@ -1,6 +1,6 @@
 <?php
 function archtober_scripts() {
-	$ver = '2.9.1';
+	$ver = '2.9.6';
 	wp_enqueue_style( 'style', get_stylesheet_uri(), null, $ver );
 	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/assets/js/jquery-3.3.1.min.js', array(), true );
 	wp_enqueue_script( 'imagesLoaded', get_template_directory_uri() . '/assets/js/imagesloaded.pkgd.min.js', array(), true );

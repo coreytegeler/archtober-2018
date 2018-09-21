@@ -362,9 +362,12 @@ jQuery(document).ready(function($) {
   $(window).resize(function() {
     return $(window).scroll();
   }).resize();
-  $('a.subscribe').click(function(e) {
+  $('body').on('click', 'a.subscribe', function(e) {
     e.preventDefault();
     return $('#subscribe').toggleClass('show');
+  });
+  $('body').on('focus', 'a.subscribe, #subscribe *', function(e) {
+    return $('#subscribe').addClass('show');
   });
   $('body').on('click', function(e) {
     if ($(e.target).is('a.subscribe')) {
@@ -392,9 +395,14 @@ jQuery(document).ready(function($) {
       dataType: 'json',
       data: data,
       error: function(jqXHR, textStatus, errorThrown) {
-        return console.log(jqXHR, textStatus, errorThrown);
+        console.log(jqXHR, textStatus, errorThrown);
+        form.addClass('error');
+        if (data.result) {
+          return message.html('Sorry, an error has occurred.');
+        }
       },
       success: function(data, textStatus, jqXHR) {
+        console.log(data, textStatus, jqXHR);
         form.addClass(data.status);
         if (data.result) {
           return message.html(data.result);

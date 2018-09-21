@@ -213,7 +213,6 @@ jQuery(document).ready ($) ->
 			closeOverlay()
 
 	openOverlay = (id, postType) ->
-		# block = $('.block[data-id="'+id+'"]')
 		$.ajax
 			url: ajax_obj.ajaxurl,
 			type: 'POST',
@@ -302,9 +301,13 @@ jQuery(document).ready ($) ->
 		$(window).scroll()
 	.resize()
 
-	$('a.subscribe').click (e) ->
+	$('body').on 'click', 'a.subscribe', (e) ->
 		e.preventDefault()
 		$('#subscribe').toggleClass('show')
+
+	$('body').on 'focus', 'a.subscribe, #subscribe *', (e) ->
+		$('#subscribe').addClass('show')
+
 
 	$('body').on 'click', (e) ->
 		if $(e.target).is('a.subscribe')
@@ -330,7 +333,11 @@ jQuery(document).ready ($) ->
 			data: data
 			error: (jqXHR, textStatus, errorThrown) ->
 				console.log jqXHR, textStatus, errorThrown
+				form.addClass('error')
+				if data.result
+					message.html('Sorry, an error has occurred.')
 			success: (data, textStatus, jqXHR) ->
+				console.log data, textStatus, jqXHR
 				form.addClass(data.status)
 				if data.result
 					message.html(data.result)
